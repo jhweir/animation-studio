@@ -1,6 +1,8 @@
 {
   "title": "Example: the studio's own smoke test",
   "style": "coasys",
+  "voice": { "provider": "kokoro", "voice": "bf_emma" },
+  "pronounce": { "AD4M": "Adam" },
   "scenes": [
     { "id": "intro", "lines": [1], "pace": "open" },
     { "id": "group", "lines": [2, 3] },

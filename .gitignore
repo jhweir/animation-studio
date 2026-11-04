@@ -8,3 +8,7 @@ build/
 assets/voices/**/*.wav
 assets/voices/**/*.onnx
 assets/voices/**/*.safetensors
+
+# Python venv for the draft voice (pipeline/voice/setup.sh)
+.venv/
+assets/voices/**/*.bin

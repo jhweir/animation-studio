@@ -4,13 +4,19 @@
 //   stills <film> <t1,t2,…>               PNG stills at those seconds
 //   sheet <film> [--at t1,t2,…] [--n 12]  one contact sheet (default: 12 frames across the film)
 //   sheet <film> --scene <id> [--n 8]     a contact sheet across one scene
-//   video <film> [--from s] [--to s]      the film, or a section of it, as a silent mp4
+//   video <film> [--from s] [--to s]      the film, or a section of it, as an mp4 with its voice
+//   voice <film> [--force]                voice new or changed lines (draft voice and recorded takes)
+//   voice-samples "<text>" [--voices a,b] [--speed 1]   one sentence in several voices, to choose one
 //
 // Quiet by default: prints output paths and a one-line summary.
 import { relative } from 'node:path';
-import { open, sheet, stills, video } from './render.ts';
+import { mux, open, sheet, stills, video, voiceTrack } from './render.ts';
 import { ROOT } from './script.ts';
 import { buildTimeline } from './timeline.ts';
+import { voiceFilm, voiceSamples } from './voice.ts';
+
+const SAMPLE_VOICES = ['bf_emma', 'bf_isabella', 'bf_alice', 'bf_lily', 'bm_george', 'bm_daniel', 'bm_lewis', 'bm_fable',
+  'af_heart', 'af_bella', 'af_nicole', 'af_sarah', 'am_michael', 'am_adam', 'am_eric', 'am_liam'];
 
 const [cmd, film, ...rest] = process.argv.slice(2);
 const opt = (name: string) => {
@@ -24,8 +30,30 @@ const spread = (a: number, b: number, n: number) =>
 
 async function main(): Promise<void> {
   if (!cmd || !film) {
-    console.log('usage: pnpm film <timeline|stills|sheet|video> <film> [options]  (see pipeline/cli.ts)');
+    console.log('usage: pnpm film <timeline|stills|sheet|video|voice|voice-samples> <film> [options]  (see pipeline/cli.ts)');
     process.exit(2);
+  }
+  if (cmd === 'voice-samples') {
+    const voices = opt('voices')?.split(',') ?? SAMPLE_VOICES;
+    const t0 = Date.now();
+    const out = await voiceSamples(film, voices, Number(opt('speed') ?? 1));
+    console.log(rel(out[0].replace(/[^/]+$/, '')));
+    console.log(`voice-samples: ${out.length} voices in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
+    return;
+  }
+  if (cmd === 'voice') {
+    const t0 = Date.now();
+    let done = 0;
+    const r = await voiceFilm(film, {
+      force: rest.includes('--force'),
+      onLine: () => process.stderr.isTTY && process.stderr.write(`\rvoiced ${++done}`),
+    });
+    if (process.stderr.isTTY && done) process.stderr.write('\r');
+    for (const w of r.warnings) console.log(`warning: ${w}`);
+    const tl = buildTimeline(film);
+    console.log(`voice ${film}: ${r.voiced.length} voiced, ${r.recorded.length} recorded takes, ${r.kept.length} unchanged` +
+      ` in ${((Date.now() - t0) / 1000).toFixed(1)}s (film now ${tl.duration}s, voice: ${tl.voice})`);
+    return;
   }
   const tl = buildTimeline(film);
   if (cmd === 'timeline') {
@@ -57,13 +85,14 @@ async function main(): Promise<void> {
       const from = Number(opt('from') ?? 0);
       const to = Number(opt('to') ?? tl.duration);
       let last = 0;
-      const out = await video(s, film, from, to, (n, total) => {
+      const picture = await video(s, film, from, to, (n, total) => {
         const pct = Math.floor((n / total) * 10);
         if (pct > last && process.stderr.isTTY) process.stderr.write(`\r${pct * 10}%`);
         last = pct;
       });
       if (process.stderr.isTTY) process.stderr.write('\r');
-      console.log(rel(out));
+      const track = await voiceTrack(film, tl);
+      console.log(rel(await mux(picture, track, from, Math.min(to, tl.duration))));
     } else {
       throw new Error(`unknown command "${cmd}"`);
     }

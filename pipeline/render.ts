@@ -133,13 +133,43 @@ function layout(rows: number, cols: number, meta: Meta): string {
   return cells.join('|');
 }
 
-/** The film (or a section of it) as a silent mp4. Returns its path. */
+/**
+ * The voice track for the whole film: every line's clip placed at its start time. Written to
+ * build/<film>/voice/track.wav. Returns undefined when no line has a clip.
+ */
+export async function voiceTrack(film: string, meta: Timeline): Promise<string | undefined> {
+  const clips = Object.values(meta.lines).filter(l => l.clip);
+  if (!clips.length) return undefined;
+  const out = join(buildDir(film), 'voice', 'track.wav');
+  const inputs = clips.flatMap(l => ['-i', join(ROOT, l.clip!.slice(1))]);
+  const delays = clips.map((l, i) => {
+    const ms = Math.round(l.v0 * 1000);
+    return `[${i}:a]aresample=48000,aformat=channel_layouts=mono,adelay=${ms}|${ms}[v${i}]`;
+  });
+  const mix = `${clips.map((_, i) => `[v${i}]`).join('')}amix=inputs=${clips.length}:normalize=0:duration=longest,apad=whole_dur=${meta.duration},atrim=0:${meta.duration}[out]`;
+  await run('ffmpeg', ['-y', '-loglevel', 'error', ...inputs, '-filter_complex', `${delays.join(';')};${mix}`, '-map', '[out]', '-ar', '48000', '-ac', '1', out]);
+  return out;
+}
+
+/** Put the voice under a picture file (the whole film or the section from..to). Returns the final mp4. */
+export async function mux(picture: string, track: string | undefined, from: number, to: number): Promise<string> {
+  const out = picture.replace(/-picture\.mp4$/, '.mp4');
+  const audio = track
+    ? ['-ss', String(from), '-t', String(to - from), '-i', track]
+    : ['-f', 'lavfi', '-t', String(to - from), '-i', 'anullsrc=r=48000:cl=mono'];
+  await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', picture, ...audio, '-map', '0:v', '-map', '1:a',
+    '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', out]);
+  rmSync(picture);
+  return out;
+}
+
+/** The film (or a section of it) as a picture-only mp4, ready for mux(). Returns its path. */
 export async function video(s: Session, film: string, from = 0, to = s.meta.duration, onProgress?: (n: number, total: number) => void): Promise<string> {
   const { fps } = s.meta;
   const dir = join(buildDir(film), 'video');
   mkdirSync(dir, { recursive: true });
   const full = from === 0 && to >= s.meta.duration;
-  const out = join(dir, full ? `${film}-picture.mp4` : `${film}-${stamp(from)}-${stamp(to)}.mp4`);
+  const out = join(dir, `${full ? film : `${film}-${stamp(from)}-${stamp(to)}`}-picture.mp4`);
   const n0 = Math.round(from * fps);
   const n1 = Math.round(to * fps);
   await run('ffmpeg', [

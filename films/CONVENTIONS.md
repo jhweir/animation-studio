@@ -8,6 +8,7 @@ films/<name>/
   film.ts         defineFilm({ style, scenes: [...] }), in playing order
   scenes/<id>.ts  one file per scene; the file name matches the scene id
   NOTES.md        the film's working state: what's done, decisions, open tweaks
+  recorded/       human voice takes, line-<n>.wav; each replaces the draft voice for that line
   assets/         files only this film uses (shared ones go in the top-level assets/)
 ```
 
@@ -25,6 +26,11 @@ films/<name>/
 ```
 
 - `size` and `fps` are optional (1920×1080, 30).
+- `voice`: `{ "provider": "kokoro", "voice": "bf_emma", "speed": 1 }` for draft narration, or leave
+  it out for estimated timing only. `pronounce` maps written words to how they're said
+  (`{ "AD4M": "Adam" }`); captions keep the written form.
+- Writing for the voice: avoid starting or ending a short part with an initialism, and spell out
+  what the voice stumbles on in `pronounce` rather than in the text.
 - Scene `pace`: `open` (first scene), `warm` (default), `calm`, `end` (last). Override any of
   `lead`, `gap`, `tail`, `hold`; a scene with no lines needs `dur`.
 - Split a line into `parts` at its natural pauses (about 6–12 words each) when a scene needs to time

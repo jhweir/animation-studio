@@ -13,6 +13,8 @@ export interface LineTime {
   text: string;
   /** Start and end of each spoken part, when the line is split into parts. */
   parts?: [number, number][];
+  /** URL of the line's voice clip, when it has one. */
+  clip?: string;
 }
 
 export interface Timeline {
@@ -23,8 +25,8 @@ export interface Timeline {
   height: number;
   fps: number;
   duration: number;
-  /** Where the voice timing came from: estimated reading time, or real clips. */
-  voice: 'silent' | 'clips';
+  /** Where the voice timing came from: estimated reading time, real clips, or some of each. */
+  voice: 'silent' | 'clips' | 'partial';
   scenes: Record<string, SceneTime>;
   lines: Record<string, LineTime>;
 }

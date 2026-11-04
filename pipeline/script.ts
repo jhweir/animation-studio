@@ -47,9 +47,26 @@ export interface ScriptLine {
   parts?: string[];
 }
 
+export interface VoiceConfig {
+  /** `kokoro`: local draft narration. `silent`: estimated reading time only. Default `silent`. */
+  provider: 'kokoro' | 'silent';
+  /** Kokoro voice id, e.g. `bf_emma`, `af_heart`. Listen first: `pnpm film voice-samples`. */
+  voice?: string;
+  /** 1 = the model's natural pace. */
+  speed?: number;
+  /** Default `en-gb` for b* voices, else `en-us`. */
+  lang?: string;
+}
+
 export interface Script {
   title: string;
   style: string;
+  voice?: VoiceConfig;
+  /**
+   * How to say words the voice gets wrong, applied before speech: `{ "AD4M": "Adam" }`. The
+   * captions and the timeline keep the written form.
+   */
+  pronounce?: Record<string, string>;
   /** Stage size in px. Default [1920, 1080]. */
   size?: [number, number];
   fps?: number;

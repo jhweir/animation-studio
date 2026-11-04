@@ -13,7 +13,9 @@ You need Node 24, pnpm, Google Chrome and ffmpeg.
 
 ```bash
 pnpm install
+pipeline/voice/setup.sh                    # once: Python venv + Kokoro model (~350 MB) for draft voice
 pnpm dev                                   # open http://localhost:5173/player.html?film=example
+pnpm film voice example                    # voice new or changed lines
 pnpm film stills example 2,6,10            # PNG stills at those seconds
 pnpm film sheet example                    # one contact sheet across the whole film
 pnpm film video example                    # the full film as an mp4
@@ -46,8 +48,6 @@ Each directory has a `CONVENTIONS.md`. Start with [CLAUDE.md](CLAUDE.md) for the
 
 ## Roadmap
 
-- **Voice:** local draft narration (an open TTS model on the GPU), then recorded takes that replace
-  the AI clips line by line, with the timeline re-timing itself around them.
 - **Sound:** music from cues (porting Data's synthesiser), sound effects, the mix, captions.
 - **3D:** a three.js layer between art and ui, driven by `t`; the WE cube as its first model; GPU
   rendering in headless Chrome.

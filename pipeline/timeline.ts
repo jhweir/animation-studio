@@ -14,6 +14,10 @@ export interface VoiceClip {
   dur: number;
   /** Start and end of each part within the clip. */
   parts?: [number, number][];
+  /** `kokoro` (draft) or `recorded` (a human take). */
+  source: 'kokoro' | 'recorded';
+  /** What the clip was made with, so a change of voice or speed re-voices it. */
+  settings: string;
 }
 
 const PART_PAUSE = 0.35;
@@ -73,6 +77,7 @@ export function buildTimeline(film: string): Timeline {
           v1: r3(t + dur),
           text: l.text,
           ...(parts ? { parts: parts.map(([a, b]) => [r3(t + a), r3(t + b)] as [number, number]) } : {}),
+          ...(fresh ? { clip: `/build/${film}/voice/${clip.file}` } : {}),
         };
         t += dur;
       });
@@ -89,7 +94,7 @@ export function buildTimeline(film: string): Timeline {
     height,
     fps: script.fps ?? 30,
     duration: r3(t),
-    voice: voiced > 0 && voiced === script.lines.length ? 'clips' : 'silent',
+    voice: voiced === 0 ? 'silent' : voiced === script.lines.length ? 'clips' : 'partial',
     scenes,
     lines,
   };
