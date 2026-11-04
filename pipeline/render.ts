@@ -13,11 +13,13 @@ type Meta = Timeline & { cues: Cue[] };
 
 export interface Session {
   meta: Meta;
+  /** Pixel density of the capture: 1 = the stage size (1080p), 2 = double (4K). */
+  scale: number;
   frame(t: number): Promise<Buffer>;
   close(): Promise<void>;
 }
 
-export async function open(film: string): Promise<Session> {
+export async function open(film: string, scale = 1): Promise<Session> {
   const server: ViteDevServer = await createServer({
     configFile: join(ROOT, 'vite.config.ts'),
     logLevel: 'error',
@@ -35,7 +37,7 @@ export async function open(film: string): Promise<Session> {
       args: ['--force-color-profile=srgb', '--hide-scrollbars'],
     });
     const errors: string[] = [];
-    const page: Page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+    const page: Page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: scale });
     page.on('pageerror', e => errors.push(String(e)));
     page.on('console', m => {
       // Failed requests are reported with their URL below.
@@ -44,7 +46,7 @@ export async function open(film: string): Promise<Session> {
     page.on('response', r => {
       if (r.status() >= 400) errors.push(`${r.status()} ${r.url()}`);
     });
-    await page.goto(`${base}stage.html?film=${film}`);
+    await page.goto(`${base}stage.html?film=${film}&capture=1`); // capture: see engine/env.ts
     await page.waitForFunction(() => window.studio !== undefined || document.querySelector('pre') !== null, null, { timeout: 30000 });
     if (errors.length) throw new Error(`stage failed to load:\n  ${errors.join('\n  ')}`);
     const failed = await page.evaluate(() => document.querySelector('pre')?.textContent ?? null);
@@ -55,10 +57,13 @@ export async function open(film: string): Promise<Session> {
     const cdp: CDPSession = await page.context().newCDPSession(page);
     return {
       meta,
+      scale,
       async frame(t: number) {
         await page.evaluate(tt => window.studio!.render(tt), t);
         if (errors.length) throw new Error(`page error at ${t}s:\n  ${errors.join('\n  ')}`);
-        const { data } = await cdp.send('Page.captureScreenshot', { format: 'png', optimizeForSpeed: true });
+        // A clip with a scale: without one, DevTools returns CSS pixels even at double density.
+        const clip = { x: 0, y: 0, width: meta.width, height: meta.height, scale };
+        const { data } = await cdp.send('Page.captureScreenshot', { format: 'png', optimizeForSpeed: true, clip });
         return Buffer.from(data, 'base64');
       },
       async close() {
@@ -204,7 +209,8 @@ export async function video(s: Session, film: string, from = 0, to = s.meta.dura
   const dir = join(buildDir(film), 'video');
   mkdirSync(dir, { recursive: true });
   const full = from === 0 && to >= s.meta.duration;
-  const out = join(dir, `${full ? film : `${film}-${stamp(from)}-${stamp(to)}`}-picture.mp4`);
+  const res = s.scale === 1 ? '' : `-${s.meta.height * s.scale}p`;
+  const out = join(dir, `${full ? film : `${film}-${stamp(from)}-${stamp(to)}`}${res}-picture.mp4`);
   const n0 = Math.round(from * fps);
   const n1 = Math.round(to * fps);
   await run('ffmpeg', [

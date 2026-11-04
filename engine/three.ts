@@ -8,6 +8,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { named } from './dom.ts';
+import { capturing } from './env.ts';
 import { afterFrame, waitFor } from './frame.ts';
 import type { SceneContext } from './film.ts';
 
@@ -46,7 +47,10 @@ export function perspective(fov: number, position: [number, number, number], asp
 export function layer3d(ctx: SceneContext, opts: { camera?: THREE.Camera; name?: string } = {}): Layer3D {
   const { width, height } = ctx.stage;
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-  renderer.setPixelRatio(1);
+  // When capturing, draw at exactly the output's pixel density (1 for 1080p, 2 for 4K): headless
+  // Chrome shrinks canvases by picking pixels, which breaks thin lines apart. In the player, at
+  // least 2x, so it stays sharp on 4K screens.
+  renderer.setPixelRatio(capturing ? window.devicePixelRatio : Math.max(2, window.devicePixelRatio));
   renderer.setSize(width, height);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const canvas = renderer.domElement;

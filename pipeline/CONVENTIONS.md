@@ -50,6 +50,12 @@ strips the types), so only erasable TypeScript here: no enums, no parameter prop
   (`{ n, file, text, dur, parts? }`). A clip whose `text` no longer matches its line is ignored and
   the line falls back to its estimate, so editing a line never leaves stale timing.
 
+## Resolution
+
+The stage is laid out at 1920×1080; `--scale 2` captures it at double pixel density, so text, SVG and
+3D are drawn natively at 3840×2160 (about 3× the render time). On a 4K screen a 1080p video is
+upscaled and looks soft next to the player; review 3D and fine lines at `--scale 2`.
+
 ## Timing
 
 Scenes run end to end. Each scene: `lead`, then its lines with `gap` between them, then `hold` and

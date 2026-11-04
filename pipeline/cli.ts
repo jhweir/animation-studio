@@ -4,7 +4,8 @@
 //   stills <film> <t1,t2,…>               PNG stills at those seconds
 //   sheet <film> [--at t1,t2,…] [--n 12]  one contact sheet (default: 12 frames across the film)
 //   sheet <film> --scene <id> [--n 8]     a contact sheet across one scene
-//   video <film> [--from s] [--to s]      the film, or a section of it, as an mp4 with its voice
+//   video <film> [--from s] [--to s]      the film, or a section of it, as an mp4 with voice and music
+//   --scale 2                             (stills, video) capture at double density: 4K from a 1080p stage
 //   voice <film> [--force]                voice new or changed lines (draft voice and recorded takes)
 //   music <film>                          arrange and render the music with the film's score
 //   voice-samples "<text>" [--voices a,b] [--speed 1]   one sentence in several voices, to choose one
@@ -66,7 +67,9 @@ async function main(): Promise<void> {
     return;
   }
   const t0 = Date.now();
-  const s = await open(film);
+  const scale = Number(opt('scale') ?? 1);
+  if (![1, 2].includes(scale)) throw new Error('--scale is 1 (1080p) or 2 (4K)');
+  const s = await open(film, scale);
   try {
     if (cmd === 'stills') {
       const at = rest[0] && !rest[0].startsWith('--') ? times(rest[0]) : [];

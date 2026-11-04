@@ -14,6 +14,7 @@ brand: that belongs to a style.
 | `frame.ts` | `onFrame`, `afterFrame`, `cue`, `waitFor`, and the render loop (a frame that waited on a load is drawn again once it lands) |
 | `film.ts` | `defineScene`, `defineFilm`, the `Style` contract, the stage and its layers |
 | `three.ts` | 3D: `layer3d(ctx)` (a WebGL canvas per scene, rendered after each frame), `isometric`/`perspective` cameras, `loadModel`, `meshes`; import it directly, only in scenes that use 3D |
+| `env.ts` | `capturing`: true while the renderer captures frames; for *how* to draw only, never *what* |
 | `boot.ts` | the entry of `stage.html`: loads a film and exposes `window.studio` |
 | `index.ts` | the public API; scenes and styles import from `engine/index.ts` only |
 
@@ -47,6 +48,9 @@ The stage size and frame rate come from the film's `script.json` (`size`, `fps`)
 - The player can't see inside a canvas, so hover shows the 3D layer's one name (`layer3d(ctx, { name })`).
 - Rendering uses SwiftShader (WebGL on the CPU). Chrome can reach the GPU in headless mode, but its
   screenshots then come out white; see pipeline/render.ts.
+- The canvas draws at the capture's pixel density (1 for 1080p, 2 for 4K) and at least 2× in the
+  player. Never let headless Chrome shrink a canvas: it picks pixels instead of averaging them, so
+  thin lines step or break apart.
 
 ## Timing conventions (measured from Data's films)
 
