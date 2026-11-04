@@ -1,0 +1,10 @@
+node_modules/
+build/
+.vite/
+*.log
+.DS_Store
+
+# Large media lives outside git until we pick a home for it (see assets/CONVENTIONS.md)
+assets/voices/**/*.wav
+assets/voices/**/*.onnx
+assets/voices/**/*.safetensors
