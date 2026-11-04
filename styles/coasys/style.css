@@ -1,0 +1,77 @@
+/* Coasys: tokens as CSS variables (keep in step with tokens.ts), fonts, and the shared pieces
+   every Coasys film draws: orbs, vignette, captions, big words. Scoped to #stage. */
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-weight: 300 800;
+  font-style: normal;
+  src: url('./fonts/BricolageGrotesque-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-weight: 100 1000;
+  font-style: normal;
+  src: url('./fonts/DMSans-var.ttf') format('truetype');
+}
+
+#stage {
+  --page: #131533; --bg-deep: #0d0f26; --surface: #1b1e45; --surface-2: #22265a; --line: #2f3468;
+  --mint: #88f3b4; --mint-light: #c1ffdf; --ink: #0f1230;
+  --orange: #ffba94; --steel: #a9b4c8; --blue: #91e3fd; --purple: #e1b7ff; --purple-light: #b8c3ff;
+  --text: #ffffff; --text-2: #c7c9dc; --text-3: #8d90b3; --danger: #e73d58;
+  --font: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-app: 'DM Sans', system-ui, sans-serif;
+
+  background: var(--page);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+#stage * { box-sizing: border-box; }
+#stage svg text { font-family: var(--font); }
+
+/* Background */
+#stage .orb { position: absolute; border-radius: 50%; pointer-events: none; }
+#stage .orb.green { background: radial-gradient(circle closest-side, rgba(117, 255, 190, .55), rgba(117, 255, 190, 0)); }
+#stage .orb.purple { background: radial-gradient(circle closest-side, rgba(109, 38, 183, .69), rgba(109, 38, 183, 0)); }
+#stage .orb.blue { background: radial-gradient(circle closest-side, rgba(37, 40, 125, .6), rgba(37, 40, 125, 0)); }
+#stage .vignette { position: absolute; inset: 0;
+  background: radial-gradient(ellipse 75% 70% at 50% 45%, rgba(13, 15, 38, 0) 55%, rgba(13, 15, 38, .75) 100%); }
+#stage .cover { position: absolute; inset: 0; }
+
+/* Captions: a mint label pill over light rows */
+#stage .cap { position: absolute; left: 0; width: 100%; text-align: center; }
+#stage .cap .lbl { display: inline-block; font-size: 22px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--mint); background: rgba(136, 243, 180, .12);
+  border-radius: 999px; padding: 6px 18px; margin-bottom: 22px; }
+#stage .cap .row { font-size: 64px; font-weight: 300; line-height: 1.14; letter-spacing: -.01em; white-space: nowrap; }
+#stage .cap .row.small { font-size: 52px; }
+#stage .cap .row span { display: inline-block; }
+#stage .cap em { font-style: normal; font-weight: 500; color: var(--mint); }
+#stage .cap .dim { color: var(--text-2); }
+
+/* Big words: weight 800, slammed in */
+#stage .beatdim { position: absolute; inset: 0; background: var(--bg-deep); opacity: 0; }
+#stage .beat { position: absolute; left: 0; width: 100%; text-align: center; }
+#stage .beat .blbl { display: inline-block; font-size: 24px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 18px; }
+#stage .beat .br { font-size: 118px; font-weight: 800; line-height: 1.04; letter-spacing: -.025em;
+  text-transform: uppercase; white-space: nowrap; }
+#stage .beat .br span { display: inline-block; }
+
+/* Accent words, in captions and big words */
+#stage em { font-style: normal; color: var(--mint); }
+#stage em.warm { color: var(--orange); }
+#stage em.cold { color: var(--steel); }
+#stage em.red { color: var(--danger); }
+
+/* Highlighter marks: the bar wipes in left to right (wipeMark) */
+#stage mark { color: inherit; background-color: transparent; background-image: linear-gradient(var(--mint), var(--mint));
+  background-repeat: no-repeat; background-position: 0 55%; background-size: 0% 78%;
+  padding: 0 .1em; margin: 0 -.02em; border-radius: .06em; }
+#stage mark.warm { background-image: linear-gradient(var(--orange), var(--orange)); }
+#stage mark.cold { background-image: linear-gradient(var(--steel), var(--steel)); }
+#stage mark.red { background-image: linear-gradient(var(--danger), var(--danger)); }
+#stage .cap mark { font-weight: 600; }
+
+#stage .fade { position: absolute; inset: 0; background: var(--bg-deep); opacity: 0; }
