@@ -30,6 +30,8 @@ export async function open(film: string): Promise<Session> {
   try {
     browser = await chromium.launch({
       executablePath: process.env.CHROME ?? '/usr/bin/google-chrome',
+      // WebGL runs on SwiftShader (the CPU). The GPU flags (--enable-gpu --use-angle=vulkan) do reach the
+      // RTX 5070, but screenshots then come out white, and light scenes rendered slower anyway.
       args: ['--force-color-profile=srgb', '--hide-scrollbars'],
     });
     const errors: string[] = [];

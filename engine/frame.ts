@@ -3,11 +3,20 @@
 type Updater = (t: number) => void;
 
 const updaters: Updater[] = [];
+const finishers: Updater[] = [];
 const pending: Promise<unknown>[] = [];
 
 /** Run f on every frame. f must be a pure function of t. */
 export function onFrame(f: Updater): void {
   updaters.push(f);
+}
+
+/**
+ * Run f after every onFrame callback of the frame has run: for drawing that depends on what the
+ * frame's updaters set, such as rendering a 3D scene. Pure in t, like onFrame.
+ */
+export function afterFrame(f: Updater): void {
+  finishers.push(f);
 }
 
 /**
@@ -18,9 +27,15 @@ export function waitFor(p: Promise<unknown>): void {
   pending.push(p);
 }
 
-export function renderFrame(t: number): Promise<unknown> | undefined {
+function draw(t: number): void {
   for (const f of updaters) f(t);
-  if (pending.length) return Promise.all(pending.splice(0));
+  for (const f of finishers) f(t);
+}
+
+/** Draw frame t. If something is still loading, wait for it and draw the frame again. */
+export function renderFrame(t: number): Promise<unknown> | undefined {
+  draw(t);
+  if (pending.length) return Promise.all(pending.splice(0)).then(() => draw(t));
   return undefined;
 }
 

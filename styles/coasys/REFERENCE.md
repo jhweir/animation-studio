@@ -46,6 +46,12 @@ Mounted automatically: three drifting orbs and a vignette.
 - `glyph.*`: path data for `key`, `check`, `laptop`, `phone`, `server`, `bot`, `cloud`.
 - `tileGlyphs`: four abstract platform marks (never real logos).
 
+## 3D (`three.ts`, import directly)
+
+- `glass(model, scene, { fill?, opacity?, edge?, edgeOpacity? })`: the WE cube's look in Coasys
+  tokens: translucent faces (mint, 0.18) with crisp edges (mint), plus soft light. Returns
+  `{ faces, edges }` materials to animate. Use it as `loadModel(url, m => glass(m, scene))`.
+
 ## SVG filters
 
 `filter="url(#glow)"` (soft) and `filter="url(#glowBig)"`.

@@ -4,8 +4,9 @@ import { onFrame } from './frame.ts';
 import { scene as sceneTime, type SceneTime, type Timeline } from './timeline.ts';
 
 /**
- * The stage, bottom to top: background (DOM), art (SVG), ui (DOM, app screens), text (DOM, captions
- * and big words), overlay (DOM, fades and end cards). A 3D layer will slot in above art.
+ * The stage, bottom to top: background (DOM), art (SVG), three (WebGL canvases, one per scene that
+ * uses 3D), ui (DOM, app screens), text (DOM, captions and big words), overlay (DOM, fades and end
+ * cards).
  */
 export interface Stage {
   width: number;
@@ -14,6 +15,7 @@ export interface Stage {
   background: HTMLDivElement;
   art: SVGSVGElement;
   defs: SVGDefsElement;
+  three: HTMLDivElement;
   ui: HTMLDivElement;
   text: HTMLDivElement;
   overlay: HTMLDivElement;
@@ -25,6 +27,8 @@ export interface SceneContext extends SceneTime {
   stage: Stage;
   /** This scene's SVG group in the art layer. */
   art: SVGGElement;
+  /** This scene's container in the 3D layer: pass the context to layer3d() from engine/three.ts. */
+  three: HTMLDivElement;
   /** This scene's container in the ui layer. */
   ui: HTMLDivElement;
   /** This scene's container in the text layer. */
@@ -87,10 +91,11 @@ export function mountStage(host: HTMLElement, tl: Timeline): Stage {
   const art = svg('svg', { class: 'layer art', viewBox: `0 0 ${w} ${h}`, width: w, height: h }, root);
   Object.assign(art.style, { position: 'absolute', left: '0', top: '0', overflow: 'visible' });
   const defs = svg('defs', {}, art);
+  const three = layer('three', root, w, h);
   const ui = layer('ui', root, w, h);
   const text = layer('text', root, w, h);
   const overlay = layer('overlay', root, w, h);
-  return { width: w, height: h, root, background, art, defs, ui, text, overlay };
+  return { width: w, height: h, root, background, art, defs, three, ui, text, overlay };
 }
 
 /** Run each scene's setup, inside its own layer groups, shown only during its time window. */
@@ -110,6 +115,7 @@ export function mountScenes(stage: Stage, tl: Timeline, scenes: SceneDef[]): voi
       parent.appendChild(e);
       return e;
     };
+    const three = mk(stage.three);
     const ui = mk(stage.ui);
     const text = mk(stage.text);
     const from = time.t0 - (def.options.before ?? 0);
@@ -118,9 +124,10 @@ export function mountScenes(stage: Stage, tl: Timeline, scenes: SceneDef[]): voi
     onFrame(t => {
       const on = t >= from && (t < to || (last && t <= to));
       vis(art, on ? 1 : 0);
+      hvis(three, on ? 1 : 0);
       hvis(ui, on ? 1 : 0);
       hvis(text, on ? 1 : 0);
     });
-    def.setup({ id: def.id, ...time, stage, art, ui, text });
+    def.setup({ id: def.id, ...time, stage, art, three, ui, text });
   }
 }

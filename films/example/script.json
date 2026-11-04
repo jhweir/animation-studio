@@ -38,6 +38,15 @@
       }
     },
     {
+      "id": "cube",
+      "lines": [
+        5
+      ],
+      "music": {
+        "mood": "lift"
+      }
+    },
+    {
       "id": "end",
       "lines": [
         4
@@ -76,6 +85,10 @@
         "Scrub anywhere.",
         "Nothing is rendered ahead."
       ]
+    },
+    {
+      "n": 5,
+      "text": "It draws in three dimensions too."
     }
   ]
 }

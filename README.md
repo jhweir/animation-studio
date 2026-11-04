@@ -51,8 +51,8 @@ Each directory has a `CONVENTIONS.md`. Start with [CLAUDE.md](CLAUDE.md) for the
 ## Roadmap
 
 - **Sound:** sound effects and licensed music as files alongside the synthesiser; captions (VTT).
-- **3D:** a three.js layer between art and ui, driven by `t`; the WE cube as its first model; GPU
-  rendering in headless Chrome.
+- **3D:** GPU rendering in headless Chrome (it reaches the GPU but captures white frames); the about
+  page's cube flourishes (snaps, particle and network shells) rebuilt as functions of `t`.
 - **Coasys vocabulary:** membranes, lattice, sealed boxes, WE app chrome, end card, as films need them.
 - **Player:** loop a range, draggable cues.
 
