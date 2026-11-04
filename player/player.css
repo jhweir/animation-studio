@@ -47,7 +47,7 @@ header { display: flex; gap: 12px; align-items: center; padding: 8px 16px; borde
 #hover { color: var(--accent); font-family: ui-monospace, monospace; }
 #toast { margin-left: auto; color: var(--accent); }
 
-#controls { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 6px 16px 4px; }
+#controls { display: grid; grid-template-columns: auto 1fr auto auto; gap: 12px; align-items: center; padding: 6px 16px 4px; }
 #play { width: 40px; }
 #track { position: relative; height: 64px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; user-select: none; overflow: hidden; }
 #scenes { position: absolute; inset: 0 0 auto 0; height: 24px; }

@@ -146,13 +146,56 @@ track.addEventListener('pointerdown', e => {
 track.addEventListener('pointermove', e => dragging && seekFromPointer(e));
 track.addEventListener('pointerup', () => (dragging = false));
 
-// Playback: real time × speed, skipping frames if a frame takes longer than one tick.
-let last = 0;
-function tick(now: number): void {
+// Voice: each line's clip, scheduled on the audio clock from the current time. Muted below 1×.
+let audioCtx: AudioContext | undefined;
+const buffers = new Map<string, Promise<AudioBuffer | undefined>>();
+let sources: AudioBufferSourceNode[] = [];
+let voiceOn = localStorage.getItem('player:voice') !== 'off';
+
+function clip(url: string): Promise<AudioBuffer | undefined> {
+  if (!buffers.has(url)) {
+    buffers.set(url, (async () => {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) return undefined;
+        audioCtx ??= new AudioContext();
+        return await audioCtx.decodeAudioData(await res.arrayBuffer());
+      } catch {
+        return undefined;
+      }
+    })());
+  }
+  return buffers.get(url)!;
+}
+
+function stopVoice(): void {
+  for (const s of sources) s.stop();
+  sources = [];
+}
+
+async function startVoice(from: number, ctxStart: number): Promise<void> {
+  if (!meta || !audioCtx || !voiceOn || Number(speedSel.value) !== 1) return;
+  for (const l of Object.values(meta.lines)) {
+    if (!l.clip || l.v1 <= from) continue;
+    const buf = await clip(l.clip);
+    if (!buf || !playing) continue;
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(audioCtx.destination);
+    const offset = Math.max(0, from - l.v0);
+    src.start(ctxStart + Math.max(0, l.v0 - from), offset);
+    sources.push(src);
+  }
+}
+
+// Playback: the audio clock × speed drives the time; frames are skipped if a scene can't keep up.
+let playFrom = 0;
+let clockStart = 0;
+let audioClock = false;
+const clock = () => (audioClock && audioCtx ? audioCtx.currentTime : performance.now() / 1000);
+function tick(): void {
   if (!playing || !meta) return;
-  const dt = last ? (now - last) / 1000 : 0;
-  last = now;
-  const next = t + dt * Number(speedSel.value);
+  const next = playFrom + (clock() - clockStart) * Number(speedSel.value);
   if (next >= meta.duration) {
     seek(meta.duration);
     setPlaying(false);
@@ -161,16 +204,33 @@ function tick(now: number): void {
   seek(next);
   requestAnimationFrame(tick);
 }
-function setPlaying(on: boolean): void {
+async function setPlaying(on: boolean): Promise<void> {
   playing = on && !!meta;
   playBtn.textContent = playing ? '❚❚' : '▶';
   saveHash();
-  if (playing) {
-    if (meta && t >= meta.duration - 0.01) seek(0);
-    last = 0;
-    requestAnimationFrame(tick);
-  }
+  stopVoice();
+  if (!playing) return;
+  if (meta && t >= meta.duration - 0.01) seek(0);
+  audioCtx ??= new AudioContext();
+  // Resuming needs a user gesture; without one, play on the page clock, silently.
+  await Promise.race([audioCtx.resume(), new Promise(r => setTimeout(r, 300))]);
+  if (!playing) return;
+  audioClock = audioCtx.state === 'running';
+  playFrom = t;
+  clockStart = clock() + 0.05; // a little headroom for the first clip to be scheduled
+  if (audioClock) void startVoice(playFrom, clockStart);
+  requestAnimationFrame(tick);
 }
+speedSel.addEventListener('change', () => playing && setPlaying(true));
+const voiceBtn = $<HTMLButtonElement>('voiceToggle');
+const showVoice = () => (voiceBtn.textContent = voiceOn ? 'voice on' : 'voice off');
+showVoice();
+voiceBtn.addEventListener('click', () => {
+  voiceOn = !voiceOn;
+  localStorage.setItem('player:voice', voiceOn ? 'on' : 'off');
+  showVoice();
+  if (playing) setPlaying(true);
+});
 playBtn.addEventListener('click', () => setPlaying(!playing));
 
 function sceneStep(dir: 1 | -1): void {
@@ -264,7 +324,12 @@ window.addEventListener('message', async e => {
   await api.ready;
   meta = api.meta;
   $('title').textContent = meta.title;
-  $('voice').textContent = meta.voice === 'silent' ? 'timing: estimated (no voice yet)' : 'timing: voice clips';
+  $('voice').textContent = {
+    silent: 'timing: estimated (no voice yet)',
+    clips: 'timing: voice clips',
+    partial: 'timing: some lines voiced, the rest estimated',
+  }[meta.voice];
+  for (const l of Object.values(meta.lines)) if (l.clip) void clip(l.clip);
   buildTrack(meta);
   fit();
   hookStage();
