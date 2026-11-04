@@ -24,6 +24,11 @@ It loads `stage.html?film=<name>` in an iframe, scales it to fit, and calls the 
 - Playback is real time × speed and skips frames a heavy scene can't keep up with. The render
   pipeline never skips: judge smoothness from a rendered section, not from the player.
 
+## Voice
+
+Each line's clip plays from the audio clock, which also drives the time while playing, so picture
+and voice stay in sync. Voice is muted below 1× and can be switched off (remembered per browser).
+
 ## Still to come
 
-Voice and music playback in sync, a loop range, draggable cues.
+Music playback, a loop range, draggable cues.
