@@ -1,0 +1,45 @@
+// The frame loop: everything registered with onFrame runs on every render(t), in registration order.
+
+type Updater = (t: number) => void;
+
+const updaters: Updater[] = [];
+const pending: Promise<unknown>[] = [];
+
+/** Run f on every frame. f must be a pure function of t. */
+export function onFrame(f: Updater): void {
+  updaters.push(f);
+}
+
+/**
+ * Hold the current frame until p resolves (an image decoding, a model loading). The renderer waits
+ * for it before taking the screenshot.
+ */
+export function waitFor(p: Promise<unknown>): void {
+  pending.push(p);
+}
+
+export function renderFrame(t: number): Promise<unknown> | undefined {
+  for (const f of updaters) f(t);
+  if (pending.length) return Promise.all(pending.splice(0));
+  return undefined;
+}
+
+export interface Cue {
+  t: number;
+  kind: string;
+  [extra: string]: unknown;
+}
+
+const cues: Cue[] = [];
+
+/**
+ * A sound cue at time t (pop, hit, caption, …). The music step turns cues into small sounds, and the
+ * player shows them on the timeline. Register cues in a scene's setup, not in onFrame.
+ */
+export function cue(t: number, kind: string, extra: Record<string, unknown> = {}): void {
+  cues.push({ ...extra, t: +t.toFixed(3), kind });
+}
+
+export function allCues(): Cue[] {
+  return cues.slice().sort((a, b) => a.t - b.t);
+}
