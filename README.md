@@ -44,6 +44,16 @@ Each directory has a `CONVENTIONS.md`. Start with [CLAUDE.md](CLAUDE.md) for the
    ("at 42.3s, make `globe` smaller").
 4. Render a section, then the film.
 
+## Roadmap
+
+- **Voice:** local draft narration (an open TTS model on the GPU), then recorded takes that replace
+  the AI clips line by line, with the timeline re-timing itself around them.
+- **Sound:** music from cues (porting Data's synthesiser), sound effects, the mix, captions.
+- **3D:** a three.js layer between art and ui, driven by `t`; the WE cube as its first model; GPU
+  rendering in headless Chrome.
+- **Coasys vocabulary:** membranes, lattice, sealed boxes, WE app chrome, end card, as films need them.
+- **Player:** audio in sync, loop a range, draggable cues.
+
 ## Credits
 
 The scene model, the Coasys drawing vocabulary, the timing conventions and the render approach
