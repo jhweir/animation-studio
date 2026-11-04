@@ -151,6 +151,7 @@ let audioCtx: AudioContext | undefined;
 const buffers = new Map<string, Promise<AudioBuffer | undefined>>();
 let sources: AudioBufferSourceNode[] = [];
 let voiceOn = localStorage.getItem('player:voice') !== 'off';
+let musicOn = localStorage.getItem('player:music') !== 'off';
 
 function clip(url: string): Promise<AudioBuffer | undefined> {
   if (!buffers.has(url)) {
@@ -171,6 +172,29 @@ function clip(url: string): Promise<AudioBuffer | undefined> {
 function stopVoice(): void {
   for (const s of sources) s.stop();
   sources = [];
+}
+
+async function startMusic(from: number, ctxStart: number): Promise<void> {
+  if (!meta?.music || !audioCtx || !musicOn || Number(speedSel.value) !== 1) return;
+  const buf = await clip(meta.music);
+  if (!buf || !playing) return;
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  const gain = audioCtx.createGain();
+  src.connect(gain).connect(audioCtx.destination);
+  // Duck under the voice, roughly as the final mix does: down while a line plays, back up after.
+  const full = 0.6;
+  const ducked = voiceOn ? 0.22 : full;
+  const at = (t: number) => ctxStart + (t - from);
+  gain.gain.setValueAtTime(full, ctxStart);
+  for (const l of Object.values(meta.lines)) {
+    if (!l.clip || l.v1 <= from) continue;
+    const a = Math.max(ctxStart, at(l.v0));
+    gain.gain.setTargetAtTime(ducked, a, 0.03);
+    gain.gain.setTargetAtTime(full, Math.max(a, at(l.v1)), 0.3);
+  }
+  src.start(ctxStart, from);
+  sources.push(src);
 }
 
 async function startVoice(from: number, ctxStart: number): Promise<void> {
@@ -218,7 +242,10 @@ async function setPlaying(on: boolean): Promise<void> {
   audioClock = audioCtx.state === 'running';
   playFrom = t;
   clockStart = clock() + 0.05; // a little headroom for the first clip to be scheduled
-  if (audioClock) void startVoice(playFrom, clockStart);
+  if (audioClock) {
+    void startVoice(playFrom, clockStart);
+    void startMusic(playFrom, clockStart);
+  }
   requestAnimationFrame(tick);
 }
 speedSel.addEventListener('change', () => playing && setPlaying(true));
@@ -229,7 +256,15 @@ voiceBtn.addEventListener('click', () => {
   voiceOn = !voiceOn;
   localStorage.setItem('player:voice', voiceOn ? 'on' : 'off');
   showVoice();
-  if (playing) setPlaying(true);
+  if (playing) void setPlaying(true);
+});
+const musicBtn = $<HTMLButtonElement>('musicToggle');
+const showMusic = () => (musicBtn.textContent = !meta?.music ? 'no music' : musicOn ? 'music on' : 'music off');
+musicBtn.addEventListener('click', () => {
+  musicOn = !musicOn;
+  localStorage.setItem('player:music', musicOn ? 'on' : 'off');
+  showMusic();
+  if (playing) void setPlaying(true);
 });
 playBtn.addEventListener('click', () => setPlaying(!playing));
 
@@ -330,6 +365,9 @@ window.addEventListener('message', async e => {
     partial: 'timing: some lines voiced, the rest estimated',
   }[meta.voice];
   for (const l of Object.values(meta.lines)) if (l.clip) void clip(l.clip);
+  if (meta.music) void clip(meta.music);
+  showMusic();
+  musicBtn.title = meta.music ? 'Music on / off' : 'No music for this timeline yet: pnpm film music <film>';
   buildTrack(meta);
   fit();
   hookStage();
