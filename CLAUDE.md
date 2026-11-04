@@ -19,6 +19,11 @@ section all rely on this. Use `rng(seed)` from the engine for randomness.
 - Visual choices come from the film's style. Don't invent colours or type outside the style's
   tokens; if the style lacks something, add it to the style, not to a scene.
 
+## Resolution
+
+Drafts render at 1080p (the default). Only a final output renders in 4K (`--scale 2`, about 3× the
+time). James reviews on a 4K screen, so a 1080p draft looks softer than the player: that's expected.
+
 ## Keeping token use down
 
 - Read a style's `REFERENCE.md`, not its source, to find a helper. Open the source only to change it.

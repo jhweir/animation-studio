@@ -54,7 +54,10 @@ strips the types), so only erasable TypeScript here: no enums, no parameter prop
 
 The stage is laid out at 1920×1080; `--scale 2` captures it at double pixel density, so text, SVG and
 3D are drawn natively at 3840×2160 (about 3× the render time). On a 4K screen a 1080p video is
-upscaled and looks soft next to the player; review 3D and fine lines at `--scale 2`.
+upscaled and looks soft next to the player.
+
+**Drafts render at 1080p (the default); only the final output renders at `--scale 2`.** A soft
+1080p draft on a 4K screen is expected, not a bug: judge detail in the player.
 
 ## Timing
 
