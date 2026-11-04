@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Player</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="/player/player.css" />
+  </head>
+  <body>
+    <header>
+      <select id="film" aria-label="Film"></select>
+      <span id="title"></span>
+      <span id="voice"></span>
+    </header>
+    <main id="viewport">
+      <div id="frame">
+        <iframe id="stage" title="Stage"></iframe>
+        <div id="outline" hidden></div>
+      </div>
+    </main>
+    <section id="readout">
+      <button id="time" title="Copy the time">0.00s</button>
+      <span id="where"></span>
+      <span id="hover"></span>
+      <span id="toast" hidden></span>
+    </section>
+    <section id="controls">
+      <button id="play" title="Play / pause (space)">▶</button>
+      <div id="track">
+        <div id="scenes"></div>
+        <div id="lines"></div>
+        <div id="cues"></div>
+        <div id="head"></div>
+      </div>
+      <select id="speed" aria-label="Speed">
+        <option value="0.25">¼×</option>
+        <option value="0.5">½×</option>
+        <option value="1" selected>1×</option>
+      </select>
+    </section>
+    <footer>
+      space play · ←/→ one frame · shift+←/→ one second · [ / ] previous / next scene · home/end ·
+      click the stage to copy what's under the cursor
+    </footer>
+    <script type="module" src="/player/player.ts"></script>
+  </body>
+</html>

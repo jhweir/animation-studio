@@ -1,0 +1,64 @@
+:root {
+  --bg: #111216;
+  --panel: #1a1c22;
+  --line: #2c2f38;
+  --text: #e8e9ee;
+  --muted: #8b8f9c;
+  --accent: #6ee7a8;
+  --scene: #2a3040;
+  --scene-alt: #232836;
+  --spoken: #5b6b8c;
+  --head: #ffffff;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.4 system-ui, sans-serif;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto auto;
+  overflow: hidden;
+}
+button, select {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+button:hover, select:hover { border-color: var(--muted); }
+
+header { display: flex; gap: 12px; align-items: center; padding: 8px 16px; border-bottom: 1px solid var(--line); }
+#title { font-weight: 600; }
+#voice { color: var(--muted); }
+
+#viewport { position: relative; min-height: 0; display: grid; place-items: center; padding: 12px 16px; }
+#frame { position: relative; overflow: hidden; background: #000; box-shadow: 0 0 0 1px var(--line); }
+#stage { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; }
+#outline { position: absolute; pointer-events: none; border: 1.5px dashed var(--accent); border-radius: 3px; }
+
+#readout { display: flex; gap: 14px; align-items: center; padding: 6px 16px; min-height: 36px; flex-wrap: wrap; }
+#time { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 84px; }
+#where { color: var(--muted); }
+#hover { color: var(--accent); font-family: ui-monospace, monospace; }
+#toast { margin-left: auto; color: var(--accent); }
+
+#controls { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 6px 16px 4px; }
+#play { width: 40px; }
+#track { position: relative; height: 64px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; user-select: none; overflow: hidden; }
+#scenes { position: absolute; inset: 0 0 auto 0; height: 24px; }
+.scene { position: absolute; top: 0; height: 24px; background: var(--scene); border-right: 1px solid var(--bg); padding: 3px 6px;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--muted); font-size: 12px; }
+.scene:nth-child(even) { background: var(--scene-alt); }
+#lines { position: absolute; left: 0; right: 0; top: 30px; height: 14px; }
+.line { position: absolute; height: 14px; background: var(--spoken); border-radius: 3px; opacity: .8; }
+.line:hover { opacity: 1; outline: 1px solid var(--text); }
+#cues { position: absolute; left: 0; right: 0; top: 50px; height: 8px; }
+.cue { position: absolute; width: 2px; height: 8px; background: var(--muted); }
+#head { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--head); pointer-events: none; }
+
+footer { padding: 4px 16px 10px; color: var(--muted); font-size: 12px; }
