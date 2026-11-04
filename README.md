@@ -16,6 +16,7 @@ pnpm install
 pipeline/voice/setup.sh                    # once: Python venv + Kokoro model (~350 MB) for draft voice
 pnpm dev                                   # open http://localhost:5173/player.html?film=example
 pnpm film voice example                    # voice new or changed lines
+pnpm film music example                    # render the music with the film's score
 pnpm film stills example 2,6,10            # PNG stills at those seconds
 pnpm film sheet example                    # one contact sheet across the whole film
 pnpm film video example                    # the full film as an mp4
@@ -29,6 +30,7 @@ Output lands in `build/<film>/` (git-ignored).
 ```
 engine/      design-neutral: timeline, easing, DOM/SVG helpers, the frame loop, cues, layers
 styles/      design styles a film picks by name; each has tokens, fonts, helpers and a REFERENCE.md
+scores/      music styles a film picks by name; each has moods, layers, cue sounds and a REFERENCE.md
 assets/      files shared across films: svg, 3d, audio, voices (each with its source and licence)
 films/       one folder per film: script.json, film.ts, scenes/, NOTES.md
 player/      the timeline player (scrub, play, markers, hover names), served by `pnpm dev`
@@ -48,17 +50,18 @@ Each directory has a `CONVENTIONS.md`. Start with [CLAUDE.md](CLAUDE.md) for the
 
 ## Roadmap
 
-- **Sound:** music from cues (porting Data's synthesiser), sound effects, the mix, captions.
+- **Sound:** sound effects and licensed music as files alongside the synthesiser; captions (VTT).
 - **3D:** a three.js layer between art and ui, driven by `t`; the WE cube as its first model; GPU
   rendering in headless Chrome.
 - **Coasys vocabulary:** membranes, lattice, sealed boxes, WE app chrome, end card, as films need them.
-- **Player:** audio in sync, loop a range, draggable cues.
+- **Player:** loop a range, draggable cues.
 
 ## Credits
 
-The scene model, the Coasys drawing vocabulary, the timing conventions and the render approach
-come from Data's Coasys film kit (`coasys/film-kit`), adapted here into typed modules with the
-engine split from the style.
+The scene model, the Coasys drawing vocabulary, the timing conventions, the render approach and
+the synthesiser behind the `coasys-ambient` score come from Data's Coasys film kit
+(`coasys/film-kit`), adapted here with the engine split from the style and the music's structure
+moved into each film's script.
 
 Fonts: Bricolage Grotesque and DM Sans, both under the SIL Open Font License (licence files sit
 next to the fonts).

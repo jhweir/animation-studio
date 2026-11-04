@@ -12,3 +12,4 @@ assets/voices/**/*.safetensors
 # Python venv for the draft voice (pipeline/voice/setup.sh)
 .venv/
 assets/voices/**/*.bin
+__pycache__/

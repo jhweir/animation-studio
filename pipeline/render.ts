@@ -1,6 +1,6 @@
 // Frame capture: opens a film's stage in headless Chrome (served by the same Vite setup as the
 // player), calls render(t) per frame and screenshots it.
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium, type Browser, type CDPSession, type Page } from 'playwright-core';
@@ -151,7 +151,40 @@ export async function voiceTrack(film: string, meta: Timeline): Promise<string |
   return out;
 }
 
-/** Put the voice under a picture file (the whole film or the section from..to). Returns the final mp4. */
+/**
+ * The film's soundtrack: music ducked under the voice (a sidechain compressor, as in Data's films),
+ * limited, then brought to the loudness target. Written to build/<film>/mix.wav.
+ */
+export async function mixTrack(film: string, voice: string | undefined, music: string | undefined, loudness = -16): Promise<string | undefined> {
+  if (!voice && !music) return undefined;
+  const out = join(buildDir(film), 'mix.wav');
+  const raw = join(buildDir(film), 'mix-raw.wav');
+  const norm = 'alimiter=limit=0.95';
+  let graph: string;
+  let inputs: string[];
+  if (voice && music) {
+    inputs = ['-i', music, '-i', voice];
+    graph = '[0:a]volume=1.2[m];[1:a]aformat=channel_layouts=stereo,asplit=2[sc][v];' +
+      '[m][sc]sidechaincompress=threshold=0.015:ratio=5:attack=8:release=900:makeup=1[md];' +
+      `[md][v]amix=inputs=2:normalize=0:duration=first,${norm}[out]`;
+  } else {
+    inputs = ['-i', (voice ?? music)!];
+    graph = `[0:a]aformat=channel_layouts=stereo,${norm}[out]`;
+  }
+  await run('ffmpeg', ['-y', '-loglevel', 'error', ...inputs, '-filter_complex', graph, '-map', '[out]', '-ar', '48000', '-ac', '2', raw]);
+  // Two passes: measure the loudness, then one gain to the target, with a limiter catching the
+  // peaks the gain pushes over -1 dBFS.
+  // (ebur128, not loudnorm's own measurement: that reads ~1 dB hot on short films.)
+  const probe = spawnSync('ffmpeg', ['-hide_banner', '-nostats', '-i', raw, '-af', 'ebur128', '-f', 'null', '-'], { encoding: 'utf8' });
+  const measured = [...probe.stderr.matchAll(/^\s+I:\s+(-?[\d.]+) LUFS/gm)].pop()?.[1];
+  if (!measured) throw new Error('could not measure the mix loudness');
+  const gain = loudness - Number(measured);
+  await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', raw, '-af', `volume=${gain.toFixed(2)}dB,alimiter=limit=0.89:level=false`, '-ar', '48000', out]);
+  rmSync(raw);
+  return out;
+}
+
+/** Put the soundtrack under a picture file (the whole film or the section from..to). Returns the final mp4. */
 export async function mux(picture: string, track: string | undefined, from: number, to: number): Promise<string> {
   const out = picture.replace(/-picture\.mp4$/, '.mp4');
   const audio = track

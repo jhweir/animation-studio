@@ -8,7 +8,7 @@ import { buildTimeline } from './pipeline/timeline.ts';
  * The studio's dev-server routes:
  *   /__studio/timeline/<film>  the film's timeline, built fresh from script.json on every request
  *   /__studio/films            the films that have a script.json
- * A change to a script.json or a voice timing file reloads the stage and the player.
+ * A change to a script.json, the voice timing or the music reloads the stage and the player.
  */
 function studio(): Plugin {
   return {
@@ -41,7 +41,9 @@ function studio(): Plugin {
         next();
       });
       const reloadOn = (file: string) =>
-        file.endsWith(`${sep}script.json`) || file.endsWith(`${sep}voice${sep}timing.json`);
+        file.endsWith(`${sep}script.json`) ||
+        file.endsWith(`${sep}voice${sep}timing.json`) ||
+        file.endsWith(`${sep}music${sep}music.json`);
       const onChange = (file: string) => {
         if (reloadOn(file)) server.ws.send({ type: 'full-reload' });
       };

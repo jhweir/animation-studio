@@ -6,12 +6,14 @@
 //   sheet <film> --scene <id> [--n 8]     a contact sheet across one scene
 //   video <film> [--from s] [--to s]      the film, or a section of it, as an mp4 with its voice
 //   voice <film> [--force]                voice new or changed lines (draft voice and recorded takes)
+//   music <film>                          arrange and render the music with the film's score
 //   voice-samples "<text>" [--voices a,b] [--speed 1]   one sentence in several voices, to choose one
 //
 // Quiet by default: prints output paths and a one-line summary.
-import { relative } from 'node:path';
-import { mux, open, sheet, stills, video, voiceTrack } from './render.ts';
-import { ROOT } from './script.ts';
+import { join, relative } from 'node:path';
+import { makeMusic } from './music.ts';
+import { mixTrack, mux, open, sheet, stills, video, voiceTrack } from './render.ts';
+import { loadScript, ROOT } from './script.ts';
 import { buildTimeline } from './timeline.ts';
 import { voiceFilm, voiceSamples } from './voice.ts';
 
@@ -91,8 +93,16 @@ async function main(): Promise<void> {
         last = pct;
       });
       if (process.stderr.isTTY) process.stderr.write('\r');
-      const track = await voiceTrack(film, tl);
+      const script = loadScript(film);
+      let music = tl.music ? join(ROOT, tl.music.slice(1)) : undefined;
+      if (script.score && !music) music = (await makeMusic(film, script, tl, s.meta.cues)).path;
+      const track = await mixTrack(film, await voiceTrack(film, tl), music, script.loudness);
       console.log(rel(await mux(picture, track, from, Math.min(to, tl.duration))));
+    } else if (cmd === 'music') {
+      const r = await makeMusic(film, loadScript(film), tl, s.meta.cues);
+      console.log(rel(r.path));
+      console.log(`music: ${r.segments} chords, ${r.rms_dbfs} dBFS rms` +
+        (r.silent_cues.length ? `; cues with no sound in this score: ${r.silent_cues.join(', ')}` : ''));
     } else {
       throw new Error(`unknown command "${cmd}"`);
     }

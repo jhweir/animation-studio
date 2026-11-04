@@ -29,6 +29,9 @@ films/<name>/
 - `voice`: `{ "provider": "kokoro", "voice": "am_michael", "speed": 1 }` for draft narration, or leave
   it out for estimated timing only. `pronounce` maps written words to how they're said
   (`{ "AD4M": "Adam" }`); captions keep the written form.
+- `score`: a music style from `scores/` (e.g. `coasys-ambient`); leave it out for no music. Each
+  scene's `music` sets its `mood`, its `layers` and whether it starts with a `cut`; see the score's
+  `REFERENCE.md`. `loudness` sets the final mix's target (default -16 LUFS).
 - Writing for the voice: avoid starting or ending a short part with an initialism, and spell out
   what the voice stumbles on in `pronounce` rather than in the text.
 - Scene `pace`: `open` (first scene), `warm` (default), `calm`, `end` (last). Override any of

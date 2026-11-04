@@ -11,6 +11,21 @@ strips the types), so only erasable TypeScript here: no enums, no parameter prop
 | `cli.ts` | `pnpm film <command> <film>`; see the header for commands |
 | `voice.ts` | the voice step: recorded takes, Kokoro drafts, `timing.json`; voice samples |
 | `voice/kokoro.py` | Kokoro TTS in the repo's `.venv` (set up once with `voice/setup.sh`) |
+| `music.ts` | the music step: sends the timeline and cues to the arranger; `music.json` records what it was made for |
+| `music/synth.py` | the shared synthesiser: instruments, filters, mixer, reverb, master (ported from Data) |
+| `music/arrange.py` | chords per line, cuts, layers, cue sounds, using the film's score from `scores/` |
+
+## Music and the mix
+
+- `pnpm film music <film>` renders `build/<film>/music/music.wav`. The music records a key of the
+  timeline it was made for; when the timing changes, the player drops it until it's rebuilt, and
+  `pnpm film video` rebuilds it automatically.
+- Cues come from the scenes' code, which the key can't see. After changing cues, re-run `music`.
+- `pnpm film video` mixes the soundtrack: the music ducked under the voice with a sidechain
+  compressor (threshold 0.015, ratio 5, attack 8 ms, release 900 ms, as in Data's films), a
+  limiter, then one gain to the loudness target (`loudness` in script.json, default -16 LUFS;
+  YouTube plays at about -14). Loudness is measured with ffmpeg's `ebur128`, not `loudnorm`, which
+  reads about 1 dB hot on short films.
 
 ## Voice
 
@@ -43,5 +58,5 @@ line lasts its words / 2.8 s + 0.45 s per part + 0.35 s between parts.
 
 ## Still to come
 
-Part times for recorded takes (from silence), music from cues, the audio mix and loudness,
-captions (VTT), GPU flags for the 3D layer.
+Part times for recorded takes (from silence), captions (VTT), GPU flags for the 3D layer, real
+audio files (sound effects, licensed music) alongside the synthesiser.

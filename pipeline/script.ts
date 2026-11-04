@@ -34,6 +34,17 @@ export interface ScriptScene {
   hold?: number;
   /** Length of a scene with no lines. */
   dur?: number;
+  /** The scene's music, read by the film's score. */
+  music?: SceneMusic;
+}
+
+export interface SceneMusic {
+  /** One of the score's moods (coasys-ambient: shade, dark, lift, warm, resolve). Default `warm`. */
+  mood?: string;
+  /** Score layers playing over this scene; consecutive scenes listing a layer share one span. */
+  layers?: string[];
+  /** Everything before this scene decays to silence at its start: a clean musical cut. */
+  cut?: boolean;
 }
 
 export interface ScriptLine {
@@ -67,6 +78,10 @@ export interface Script {
    * captions and the timeline keep the written form.
    */
   pronounce?: Record<string, string>;
+  /** A score in scores/ (e.g. `coasys-ambient`). Leave out for no music. */
+  score?: string;
+  /** Loudness target of the final mix in LUFS. Default -16. */
+  loudness?: number;
   /** Stage size in px. Default [1920, 1080]. */
   size?: [number, number];
   fps?: number;

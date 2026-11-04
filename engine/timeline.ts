@@ -29,6 +29,8 @@ export interface Timeline {
   voice: 'silent' | 'clips' | 'partial';
   scenes: Record<string, SceneTime>;
   lines: Record<string, LineTime>;
+  /** URL of the music, when it was made for this exact timeline. */
+  music?: string;
 }
 
 let current: Timeline | undefined;

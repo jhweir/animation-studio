@@ -3,6 +3,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { LineTime, SceneTime, Timeline } from '../engine/timeline.ts';
+import { freshMusic, musicKey } from './music.ts';
 import { buildDir, loadScript, PACES, type ScriptLine } from './script.ts';
 
 /** One voiced line: written by the voice step to build/<film>/voice/timing.json. */
@@ -86,7 +87,7 @@ export function buildTimeline(film: string): Timeline {
     scenes[sc.id] = { t0: r3(t0), t1: r3(t), lines: sc.lines };
   }
   const [width, height] = script.size ?? [1920, 1080];
-  return {
+  const tl: Timeline = {
     film,
     title: script.title,
     style: script.style,
@@ -98,4 +99,6 @@ export function buildTimeline(film: string): Timeline {
     scenes,
     lines,
   };
+  const music = script.score ? freshMusic(film, musicKey(script, tl)) : undefined;
+  return music ? { ...tl, music } : tl;
 }
