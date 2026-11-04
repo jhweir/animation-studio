@@ -30,6 +30,7 @@ Mounted automatically: three drifting orbs and a vignette.
 - `caption(ctx.text, { label?, t0, t1, top?, rows: [[{ h, t }, …], …], small?, name? })`: a mint
   label pill over light 64 px rows; each piece rises in at its own `t`. `h` is HTML: `<em>` for a
   mint word (`em.warm`, `em.cold`, `em.red`), `<mark>` for a highlighter wipe, `<span class="dim">`.
+  Pieces are inline blocks, so a trailing space collapses: end a piece with `&nbsp;` instead.
 - `beat(ctx.text, { t0, t1, rows: [{ h, t, size? }], y?, size?, dim?, label?, punch?, name? })`:
   big 800-weight uppercase words that slam in; `dim` darkens the art behind; each row kicks the
   camera unless `punch: false`.

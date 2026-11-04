@@ -1,0 +1,15 @@
+{
+  "title": "Example: the studio's own smoke test",
+  "style": "coasys",
+  "scenes": [
+    { "id": "intro", "lines": [1], "pace": "open" },
+    { "id": "group", "lines": [2, 3] },
+    { "id": "end", "lines": [4], "pace": "end", "hold": 1.5 }
+  ],
+  "lines": [
+    { "n": 1, "text": "Every frame here is a function of time.", "parts": ["Every frame here", "is a function of time."] },
+    { "n": 2, "text": "People gather into a group." },
+    { "n": 3, "text": "A bot joins them." },
+    { "n": 4, "text": "Scrub anywhere. Nothing is rendered ahead.", "parts": ["Scrub anywhere.", "Nothing is rendered ahead."] }
+  ]
+}
