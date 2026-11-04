@@ -79,7 +79,7 @@ function duration(wav: string): number {
 
 function kokoroSettings(script: Script, l: ScriptLine): { settings: string; job: Omit<KokoroJob, 'out'> } {
   const v = script.voice!;
-  const voice = v.voice ?? 'bf_emma';
+  const voice = v.voice ?? 'am_michael';
   const speed = v.speed ?? 1;
   const lang = v.lang ?? (voice.startsWith('b') ? 'en-gb' : 'en-us');
   const parts = (l.parts ?? [l.text]).map(p => spoken(p, script.pronounce));

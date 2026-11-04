@@ -50,7 +50,7 @@ export interface ScriptLine {
 export interface VoiceConfig {
   /** `kokoro`: local draft narration. `silent`: estimated reading time only. Default `silent`. */
   provider: 'kokoro' | 'silent';
-  /** Kokoro voice id, e.g. `bf_emma`, `af_heart`. Listen first: `pnpm film voice-samples`. */
+  /** Kokoro voice id, e.g. `am_michael` (the default), `bf_emma`. Listen first: `pnpm film voice-samples`. */
   voice?: string;
   /** 1 = the model's natural pace. */
   speed?: number;

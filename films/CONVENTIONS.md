@@ -26,7 +26,7 @@ films/<name>/
 ```
 
 - `size` and `fps` are optional (1920×1080, 30).
-- `voice`: `{ "provider": "kokoro", "voice": "bf_emma", "speed": 1 }` for draft narration, or leave
+- `voice`: `{ "provider": "kokoro", "voice": "am_michael", "speed": 1 }` for draft narration, or leave
   it out for estimated timing only. `pronounce` maps written words to how they're said
   (`{ "AD4M": "Adam" }`); captions keep the written form.
 - Writing for the voice: avoid starting or ending a short part with an initialism, and spell out
