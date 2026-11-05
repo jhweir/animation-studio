@@ -20,7 +20,7 @@ These scripts are now the source of the words; the drafts in the planning notes 
 
 | scene | state |
 |---|---|
-| their-ground (1) | first draft, waiting for James's review |
+| their-ground (1) | second draft (leaderboard race), waiting for James's review |
 | users (2) … end-card | placeholders |
 
 ## Decisions
@@ -35,7 +35,7 @@ These scripts are now the source of the words; the drafts in the planning notes 
 A globe; three company buildings; grey roots spreading across the planet like a nervous system,
 contrasted with mint for healthy, living alternatives that appear and fade.
 
-## Section 1, first draft (2026-11-05)
+## Section 1, first draft (2026-11-05, replaced)
 
 Globe turning slowly (centre lon 12° drifting east, lat 16°); three steel towers rise on "companies";
 320 people dots on land; grey roots creep from the towers' feet over "crept in slowly" and reach
@@ -46,6 +46,29 @@ thicken on "size and attention win" (big words, art dimmed). A red crack on "bro
 lifts and shrinks, and "the people who use them" / "the people who build them" appear below.
 
 Towers and small towers are drawn in the scene for now; promote them to the style if they recur.
+
+## Section 1, second draft (2026-11-05)
+
+James preferred a leaderboard race of real, named platforms to the abstract towers, in layout B of
+the mock-ups (board left, globe right), with option 3 for the data: race 2006–2021, then cut to a
+"today" frame by company.
+
+- Data: `data/platforms.csv`, `owners.csv`, `sources.md` (cited, compiled 2026-11-05; nothing
+  interpolated there). `data/race.ts` is the curated selection and says what was left out and why.
+  On screen: a source line; between reported years bars move in straight lines.
+- 0–1.5 s globe and board in; the race runs 2006→2021 from 1.6 s to the end of line 2 (~1.5 s a
+  year). Cables run from the top four bars to their owner's ground on the globe; each owner grows a
+  root network in proportion to its biggest platform (MySpace's withers); people dots turn steel as
+  roots reach them. Owners follow acquisitions (WhatsApp and Instagram move to Meta's ground).
+- Line 2: seven mint sprouts appear, grow small roots of their own, and fade.
+- Line 3 ("size and attention win"): the board cuts to Today by company (Meta 3.58B daily people,
+  Alphabet 2B (2019), Tencent, ByteDance 1B (2021), …, Bluesky and Mastodon in mint); a red dashed
+  line drops under the four giants. The big "size and attention" words were dropped.
+- Line 4: the crack; the board clears, the globe moves to the centre and shrinks; "the people who
+  use them" / "who build them" appear.
+
+The race (`engine/race.ts`) and leaderboard (`styles/coasys/leaderboard.ts`) are reusable for other
+films and data.
 
 ## Open tweaks
 
