@@ -64,6 +64,18 @@ Mounted automatically: three drifting orbs and a vignette.
 - `grownPart(branch, u)`: the part grown at network progress `u`, as GeoJSON for `globe.path`.
 - `destination(lonLat, bearing, degrees)`: a point along a great circle.
 
+## Leaderboard (`leaderboard.ts`)
+
+- `leaderboard(parent, race, { x, y, rows, time: t => raceTime, pitch?, barH?, nameW?, maxLen?, leaders?, visible?, period?, format?, name? })`:
+  draws an engine `race` as ranked rows (name, bar, value) that grow, shrink and slide past each
+  other. Any data: the film supplies the series and maps scene time to race time. `leaders` rows are
+  brighter with filled bars; `period` is a large quiet label (the year). Series `meta`: `alt: true`
+  draws a row mint (ours / open alternatives), `sub` is small text inside the bar, `note` follows
+  the value. A held value past its last point shows that point's year. Returns
+  `{ g, rows, rowTop(i) }`: `rows` holds each row's drawn `y`, bar `end` and text `after` for this
+  frame, for attaching things (cables) from an onFrame registered after the board.
+- `formatCount(millions)`: `950M`, `1.27B`, `0.9M`.
+
 ## Placeholder (`placeholder.ts`)
 
 The style's stand-in for a scene a cut hasn't built: the section title and its narration, sentence
