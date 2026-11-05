@@ -1,4 +1,4 @@
-// pnpm film <command> <film> [options]
+// pnpm film <command> <film>[/<cut>] [options]
 //
 //   timeline <film>                       print the scene and line times
 //   stills <film> <t1,t2,…>               PNG stills at those seconds
@@ -14,14 +14,16 @@
 import { join, relative } from 'node:path';
 import { makeMusic } from './music.ts';
 import { mixTrack, mux, open, sheet, stills, video, voiceTrack } from './render.ts';
-import { loadScript, ROOT } from './script.ts';
+import { loadScript, resolveFilm, ROOT } from './script.ts';
 import { buildTimeline } from './timeline.ts';
 import { voiceFilm, voiceSamples } from './voice.ts';
 
 const SAMPLE_VOICES = ['bf_emma', 'bf_isabella', 'bf_alice', 'bf_lily', 'bm_george', 'bm_daniel', 'bm_lewis', 'bm_fable',
   'af_heart', 'af_bella', 'af_nicole', 'af_sarah', 'am_michael', 'am_adam', 'am_eric', 'am_liam'];
 
-const [cmd, film, ...rest] = process.argv.slice(2);
+const [cmd, arg, ...rest] = process.argv.slice(2);
+// A film id is <film>/<cut>; <film> alone works when it has one cut.
+let film = arg;
 const opt = (name: string) => {
   const i = rest.indexOf(`--${name}`);
   return i >= 0 ? rest[i + 1] : undefined;
@@ -32,7 +34,7 @@ const spread = (a: number, b: number, n: number) =>
   Array.from({ length: n }, (_, i) => +(a + ((b - a) * (i + 0.5)) / n).toFixed(2));
 
 async function main(): Promise<void> {
-  if (!cmd || !film) {
+  if (!cmd || !arg) {
     console.log('usage: pnpm film <timeline|stills|sheet|video|voice|voice-samples> <film> [options]  (see pipeline/cli.ts)');
     process.exit(2);
   }
@@ -44,6 +46,7 @@ async function main(): Promise<void> {
     console.log(`voice-samples: ${out.length} voices in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
     return;
   }
+  film = resolveFilm(arg);
   if (cmd === 'voice') {
     const t0 = Date.now();
     let done = 0;

@@ -36,7 +36,7 @@ Layers, bottom to top: `background` (DOM) → `art` (SVG) → `three` (WebGL) �
 → `text` (DOM, captions and big words) → `overlay` (DOM, fades and end cards). Each scene gets its
 own group in `art`, `three`, `ui` and `text`, shown only between its start and end (plus its `before`/`after` overlap).
 
-The stage size and frame rate come from the film's `script.json` (`size`, `fps`). Scenes read
+The stage size and frame rate come from the cut's `cut.json` (`size`, `fps`). Scenes read
 `ctx.stage.width` and `ctx.stage.height` rather than assuming 1920×1080.
 
 ## 3D

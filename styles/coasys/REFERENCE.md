@@ -52,6 +52,11 @@ Mounted automatically: three drifting orbs and a vignette.
   tokens: translucent faces (mint, 0.18) with crisp edges (mint), plus soft light. Returns
   `{ faces, edges }` materials to animate. Use it as `loadModel(url, m => glass(m, scene))`.
 
+## Placeholder (`placeholder.ts`)
+
+The style's stand-in for a scene a cut hasn't built: the section title and its narration, sentence
+by sentence with the voice, and a "Not animated yet" tag. Mounted automatically.
+
 ## SVG filters
 
 `filter="url(#glow)"` (soft) and `filter="url(#glowBig)"`.

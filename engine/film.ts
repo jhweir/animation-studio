@@ -1,7 +1,7 @@
 // Films, scenes and styles, and the stage they draw on.
 import { hvis, svg, vis } from './dom.ts';
 import { onFrame } from './frame.ts';
-import { scene as sceneTime, type SceneTime, type Timeline } from './timeline.ts';
+import { line as lineTime, scene as sceneTime, type LineTime, type SceneTime, type Timeline } from './timeline.ts';
 
 /**
  * The stage, bottom to top: background (DOM), art (SVG), three (WebGL canvases, one per scene that
@@ -33,6 +33,12 @@ export interface SceneContext extends SceneTime {
   ui: HTMLDivElement;
   /** This scene's container in the text layer. */
   text: HTMLDivElement;
+  /** The scene's narration lines, in order, with their times. */
+  lineTimes: LineTime[];
+  /** The scene's i-th line (from 0; -1 = the last). */
+  line(i: number): LineTime;
+  /** Part j (a sentence, from 0; -1 = the last) of the scene's i-th line. */
+  part(i: number, j: number): { v0: number; v1: number };
 }
 
 export interface SceneOptions {
@@ -51,7 +57,7 @@ export interface SceneDef {
   options: SceneOptions;
 }
 
-/** Define a scene. Its id must match a scene id in the film's script.json. */
+/** Define a scene. Its id must match a scene id (a `##` heading) in the cut's script. */
 export function defineScene(id: string, setup: (ctx: SceneContext) => void, options: SceneOptions = {}): SceneDef {
   return { id, setup, options };
 }
@@ -62,6 +68,8 @@ export interface Style {
   fonts: string[];
   /** Add the style's background, SVG defs and anything else every film in it shares. */
   mount(stage: Stage): void;
+  /** Drawn for a scene the cut hasn't built yet: typically its title and its narration as captions. */
+  placeholder?: (ctx: SceneContext) => void;
 }
 
 export interface FilmDef {
@@ -98,19 +106,27 @@ export function mountStage(host: HTMLElement, tl: Timeline): Stage {
   return { width: w, height: h, root, background, art, defs, three, ui, text, overlay };
 }
 
-/** Run each scene's setup, inside its own layer groups, shown only during its time window. */
-export function mountScenes(stage: Stage, tl: Timeline, scenes: SceneDef[]): void {
-  const defined = new Set(scenes.map(s => s.id));
-  for (const id of Object.keys(tl.scenes)) {
-    if (!defined.has(id)) console.warn(`script.json has scene "${id}" but the film defines no scene for it`);
+/**
+ * Run each scene's setup, inside its own layer groups, shown only during its time window. A scene in
+ * the script that the cut doesn't define yet gets the style's placeholder (its title and narration),
+ * so a film plays end to end while it's being built.
+ */
+export function mountScenes(stage: Stage, tl: Timeline, scenes: SceneDef[], style: Style): void {
+  const byId = new Map(scenes.map(s => [s.id, s]));
+  for (const s of scenes) {
+    if (!tl.scenes[s.id]) console.warn(`the cut defines scene "${s.id}", which isn't in its script`);
   }
-  for (const def of scenes) {
-    if (!tl.scenes[def.id]) continue; // cut from the script: skip
-    const time = sceneTime(def.id);
-    const art = svg('g', { 'data-scene': def.id }, stage.art);
+  for (const id of Object.keys(tl.scenes)) {
+    const def = byId.get(id) ?? (style.placeholder ? defineScene(id, style.placeholder) : undefined);
+    if (!def) {
+      console.warn(`no scene "${id}" in the cut, and the style has no placeholder`);
+      continue;
+    }
+    const time = sceneTime(id);
+    const art = svg('g', { 'data-scene': id }, stage.art);
     const mk = (parent: HTMLDivElement) => {
       const e = document.createElement('div');
-      e.dataset.scene = def.id;
+      e.dataset.scene = id;
       Object.assign(e.style, { position: 'absolute', inset: '0' });
       parent.appendChild(e);
       return e;
@@ -128,6 +144,30 @@ export function mountScenes(stage: Stage, tl: Timeline, scenes: SceneDef[]): voi
       hvis(ui, on ? 1 : 0);
       hvis(text, on ? 1 : 0);
     });
-    def.setup({ id: def.id, ...time, stage, art, three, ui, text });
+    const lines = time.lines.map(n => lineTime(n));
+    def.setup({
+      id,
+      ...time,
+      stage,
+      art,
+      three,
+      ui,
+      text,
+      lineTimes: lines,
+      line: i => {
+        const l = lines[i < 0 ? lines.length + i : i];
+        if (!l) throw new Error(`scene "${id}" has ${lines.length} line(s); line(${i}) doesn't exist`);
+        return l;
+      },
+      part: (i, j) => {
+        const l = lines[i < 0 ? lines.length + i : i];
+        if (!l) throw new Error(`scene "${id}" has ${lines.length} line(s); part(${i}, ${j}) doesn't exist`);
+        const k = l.parts?.length ?? 1;
+        const p = l.parts?.[j < 0 ? k + j : j];
+        if (p) return { v0: p[0], v1: p[1] };
+        if (j === 0 || j === -1) return { v0: l.v0, v1: l.v1 };
+        throw new Error(`scene "${id}" line ${i} has ${k} part(s); part(${i}, ${j}) doesn't exist`);
+      },
+    });
   }
 }

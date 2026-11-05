@@ -1,12 +1,12 @@
 // Lines 2–3: eight people pop in and a mint membrane draws round them; then a bot joins on the right.
 import {
-  defineScene, drawOn, eback, eout, line, named, onFrame, prog, set, strokePath, svg, tf, vis,
-} from '../../../engine/index.ts';
-import { bot, caption, color, person } from '../../../styles/coasys/index.ts';
+  defineScene, drawOn, eback, eout, named, onFrame, prog, set, strokePath, svg, tf, vis,
+} from '../../../../../engine/index.ts';
+import { bot, caption, color, person } from '../../../../../styles/coasys/index.ts';
 
-export default defineScene('group', ({ t1, art, text }) => {
-  const l2 = line(2);
-  const l3 = line(3);
+export default defineScene('group', ({ t1, art, text, line }) => {
+  const l2 = line(0);
+  const l3 = line(1);
   const cx = 960;
   const cy = 440;
 

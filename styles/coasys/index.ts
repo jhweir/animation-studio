@@ -1,6 +1,7 @@
 // The Coasys style. A film uses it with `style: coasys` and imports helpers from here.
 import { svg, type Style } from '../../engine/index.ts';
 import { mountBackground } from './background.ts';
+import { placeholder } from './placeholder.ts';
 import { mountType } from './type.ts';
 import './style.css';
 
@@ -8,9 +9,11 @@ export * from './tokens.ts';
 export * from './background.ts';
 export * from './type.ts';
 export * from './figures.ts';
+export { placeholder } from './placeholder.ts';
 
 const coasys: Style = {
   name: 'coasys',
+  placeholder,
   fonts: ['300 70px "Bricolage Grotesque"', '700 24px "Bricolage Grotesque"', '800 120px "Bricolage Grotesque"', '400 16px "DM Sans"'],
   mount(stage) {
     mountBackground(stage);

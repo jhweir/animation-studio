@@ -1,10 +1,10 @@
 // Line 4: a caption in two parts, then the stage fades to the deep background.
-import { defineScene, div, hvis, onFrame, part, prog } from '../../../engine/index.ts';
-import { caption } from '../../../styles/coasys/index.ts';
+import { defineScene, div, hvis, onFrame, prog } from '../../../../../engine/index.ts';
+import { caption } from '../../../../../styles/coasys/index.ts';
 
-export default defineScene('end', ({ t0, t1, text, stage }) => {
-  const a = part(4, 0);
-  const b = part(4, 1);
+export default defineScene('end', ({ t0, t1, text, stage, part }) => {
+  const a = part(0, 0);
+  const b = part(0, 1);
   caption(text, {
     name: 'closing-caption',
     label: 'The player',

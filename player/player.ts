@@ -384,7 +384,7 @@ async function init(): Promise<void> {
     location.href = `/player.html?film=${filmSelect.value}`;
   });
   if (!film) {
-    whereEl.textContent = 'No films yet: add films/<name>/script.json';
+    whereEl.textContent = 'No films yet: add films/<film>/cuts/<cut>/cut.json';
     return;
   }
   document.title = `${film} · Player`;

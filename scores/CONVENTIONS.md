@@ -1,6 +1,6 @@
 # scores/
 
-A score is a music style a film picks by name (`"score": "coasys-ambient"`), independent of its
+A score is a music style a film picks by name (`"score": "coasys-ambient"` in its cut.json), independent of its
 visual style. Scores are Python on top of the shared synthesiser in `pipeline/music/synth.py`; the
 arranger (`pipeline/music/arrange.py`) decides *when* things play, the score decides *how they
 sound*.
@@ -39,4 +39,4 @@ scores/<name>/
 - **Pans stay in -1..1.** Out of range gives NaN, which silences the whole score.
 - **Keep levels in the score's range.** The master normalises the peak; the final mix sets loudness.
   A new sound that's much louder than its neighbours pushes everything else down.
-- **REFERENCE.md is the API** for choosing moods and layers in `script.json`; update it with the score.
+- **REFERENCE.md is the API** for choosing moods and layers in `cut.json`; update it with the score.

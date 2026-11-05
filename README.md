@@ -14,7 +14,7 @@ You need Node 24, pnpm, Google Chrome and ffmpeg.
 ```bash
 pnpm install
 pipeline/voice/setup.sh                    # once: Python venv + Kokoro model (~350 MB) for draft voice
-pnpm dev                                   # open http://localhost:5173/player.html?film=example
+pnpm dev                                   # open http://localhost:5173/player.html?film=example/main
 pnpm film voice example                    # voice new or changed lines
 pnpm film music example                    # render the music with the film's score
 pnpm film stills example 2,6,10            # PNG stills at those seconds
@@ -23,7 +23,8 @@ pnpm film video example                    # the full film as an mp4
 pnpm film video example --from 4 --to 9    # one section
 ```
 
-Output lands in `build/<film>/` (git-ignored).
+A film id is `<film>/<cut>`; `<film>` alone works while the film has one cut. Output lands in
+`build/<film>/<cut>/` (git-ignored).
 
 ## Layout
 
@@ -32,7 +33,7 @@ engine/      design-neutral: timeline, easing, DOM/SVG helpers, the frame loop, 
 styles/      design styles a film picks by name; each has tokens, fonts, helpers and a REFERENCE.md
 scores/      music styles a film picks by name; each has moods, layers, cue sounds and a REFERENCE.md
 assets/      files shared across films: svg, 3d, audio, voices (each with its source and licence)
-films/       one folder per film: script.json, film.ts, scenes/, NOTES.md
+films/       one folder per film: script versions (markdown) and cuts (buildable versions), NOTES.md
 player/      the timeline player (scrub, play, markers, hover names), served by `pnpm dev`
 pipeline/    timeline builder, renderer (stills, contact sheets, video), CLI
 ```
@@ -41,8 +42,8 @@ Each directory has a `CONVENTIONS.md`. Start with [CLAUDE.md](CLAUDE.md) for the
 
 ## The loop
 
-1. Write or edit the film's `script.json` (scenes and narration lines).
-2. Write scenes in `films/<film>/scenes/`. Open the player; it reloads on every save and keeps
+1. Write or edit the script (`films/<film>/scripts/*.md`) and the cut's `cut.json`.
+2. Write scenes in `films/<film>/cuts/<cut>/scenes/`. Open the player; it reloads on every save and keeps
    the current time.
 3. Review in the player. Hover an element to see its name, copy the time, and ask for a change
    ("at 42.3s, make `globe` smaller").

@@ -2,11 +2,12 @@
 // timeline reads. Only new or changed lines are voiced again.
 //
 // Sources, per line:
-//   recorded   films/<film>/recorded/line-<n>.wav (a human take) always wins
-//   kokoro     draft narration from the local Kokoro model (script.json "voice")
+//   recorded   films/<film>/cuts/<cut>/recorded/<scene>-<i>.wav (a human take) always wins, e.g. users-2.wav
+//   kokoro     draft narration from the local Kokoro model (cut.json "voice")
 //   none       the line keeps its estimated reading time
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { buildDir, filmDir, loadScript, ROOT, type Script, type ScriptLine } from './script.ts';
 import type { VoiceClip } from './timeline.ts';
@@ -82,7 +83,7 @@ function kokoroSettings(script: Script, l: ScriptLine): { settings: string; job:
   const voice = v.voice ?? 'am_michael';
   const speed = v.speed ?? 1;
   const lang = v.lang ?? (voice.startsWith('b') ? 'en-gb' : 'en-us');
-  const parts = (l.parts ?? [l.text]).map(p => spoken(p, script.pronounce));
+  const parts = l.parts.map(p => spoken(p, script.pronounce));
   return { settings: `kokoro|${voice}|${speed}|${lang}|${parts.join(' / ')}`, job: { parts, voice, speed, lang } };
 }
 
@@ -94,48 +95,52 @@ export interface VoiceReport {
   warnings: string[];
 }
 
-/** Bring build/<film>/voice/ up to date with the script. */
+/** Bring build/<film>/<cut>/voice/ up to date with the script. */
 export async function voiceFilm(film: string, opts: { force?: boolean; onLine?: (n: number) => void } = {}): Promise<VoiceReport> {
   const script = loadScript(film);
   const dir = join(buildDir(film), 'voice');
   mkdirSync(dir, { recursive: true });
   const timingPath = join(dir, 'timing.json');
-  const prior = new Map<number, VoiceClip>(
-    existsSync(timingPath) ? (JSON.parse(readFileSync(timingPath, 'utf8')) as VoiceClip[]).map(c => [c.n, c]) : [],
-  );
+  const priorClips = existsSync(timingPath) ? (JSON.parse(readFileSync(timingPath, 'utf8')) as VoiceClip[]) : [];
+  // Drafts are reused by what they say and how (so moving or renumbering a line costs nothing);
+  // recorded takes by the line's stable key.
+  const draftBySettings = new Map(priorClips.filter(c => c.source === 'kokoro').map(c => [c.settings, c]));
+  const recordedByKey = new Map(priorClips.filter(c => c.source === 'recorded').map(c => [c.key, c]));
   const report: VoiceReport = { voiced: [], recorded: [], kept: [], stale: [], warnings: [] };
   const next = new Map<number, VoiceClip>();
-  const jobs: (KokoroJob & { n: number; settings: string; text: string })[] = [];
+  const jobs: (KokoroJob & { n: number; key: string; settings: string; text: string; file: string })[] = [];
 
   for (const l of script.lines) {
-    const old = prior.get(l.n);
-    const rec = join(filmDir(film), 'recorded', `line-${l.n}.wav`);
+    const rec = join(filmDir(film), 'recorded', `${l.key}.wav`);
     if (existsSync(rec)) {
       const settings = `recorded|${statSync(rec).mtimeMs}`;
-      if (old?.source === 'recorded' && old.settings === settings && !opts.force) {
-        next.set(l.n, old);
+      const old = recordedByKey.get(l.key);
+      if (old && old.settings === settings && !opts.force && existsSync(join(dir, old.file))) {
+        next.set(l.n, { ...old, n: l.n });
         if (old.text !== l.text) {
           report.stale.push(l.n);
-          report.warnings.push(`line ${l.n} changed since it was recorded: re-record it (the old timing is kept until then)`);
+          report.warnings.push(`${l.key} changed since it was recorded: re-record it (the old timing is kept until then)`);
         } else report.kept.push(l.n);
         continue;
       }
-      // A human take: normalise to 48 kHz mono and take its length. Parts split evenly for now.
-      const file = `line-${l.n}-recorded.wav`;
-      const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', rec, '-ac', '1', '-ar', '48000', join(dir, file)], { encoding: 'utf8' });
+      // A human take: normalise to 48 kHz mono, -18 LUFS, and take its length. Parts split evenly for now.
+      const file = `rec-${l.key}.wav`;
+      const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', rec, '-af', 'loudnorm=I=-18:TP=-2', '-ac', '1', '-ar', '48000', join(dir, file)], { encoding: 'utf8' });
       if (r.status !== 0) throw new Error(`can't read ${rec}: ${r.stderr}`);
-      next.set(l.n, { n: l.n, file, text: l.text, dur: duration(join(dir, file)), source: 'recorded', settings });
+      next.set(l.n, { n: l.n, key: l.key, file, text: l.text, dur: duration(join(dir, file)), source: 'recorded', settings });
       report.recorded.push(l.n);
       continue;
     }
     if (script.voice?.provider !== 'kokoro') continue;
     const { settings, job } = kokoroSettings(script, l);
-    if (old?.source === 'kokoro' && old.settings === settings && old.text === l.text && !opts.force && existsSync(join(dir, old.file))) {
-      next.set(l.n, old);
+    const old = draftBySettings.get(settings);
+    if (old && !opts.force && existsSync(join(dir, old.file))) {
+      next.set(l.n, { ...old, n: l.n, key: l.key, text: l.text });
       report.kept.push(l.n);
       continue;
     }
-    jobs.push({ ...job, n: l.n, settings, text: l.text, out: join(dir, `line-${l.n}.wav`) });
+    const file = `draft-${createHash('sha1').update(settings).digest('hex').slice(0, 12)}.wav`;
+    jobs.push({ ...job, n: l.n, key: l.key, settings, text: l.text, file, out: join(dir, file) });
   }
 
   if (jobs.length) {
@@ -144,7 +149,8 @@ export async function voiceFilm(film: string, opts: { force?: boolean; onLine?: 
       const j = byOut.get(r.out)!;
       next.set(j.n, {
         n: j.n,
-        file: `line-${j.n}.wav`,
+        key: j.key,
+        file: j.file,
         text: j.text,
         dur: r.dur,
         ...(j.parts.length > 1 ? { parts: r.parts } : {}),
@@ -158,6 +164,9 @@ export async function voiceFilm(film: string, opts: { force?: boolean; onLine?: 
 
   const clips = script.lines.map(l => next.get(l.n)).filter((c): c is VoiceClip => !!c);
   writeFileSync(timingPath, JSON.stringify(clips, null, 1));
+  // Clips no line uses any more.
+  const used = new Set(clips.map(c => c.file));
+  for (const f of readdirSync(dir)) if (f.endsWith('.wav') && f !== 'track.wav' && !used.has(f)) rmSync(join(dir, f));
   return report;
 }
 

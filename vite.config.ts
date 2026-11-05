@@ -1,14 +1,13 @@
-import { readdirSync } from 'node:fs';
-import { join, sep } from 'node:path';
+import { sep } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
-import { ROOT } from './pipeline/script.ts';
+import { listFilms, ROOT } from './pipeline/script.ts';
 import { buildTimeline } from './pipeline/timeline.ts';
 
 /**
  * The studio's dev-server routes:
- *   /__studio/timeline/<film>  the film's timeline, built fresh from script.json on every request
- *   /__studio/films            the films that have a script.json
- * A change to a script.json, the voice timing or the music reloads the stage and the player.
+ *   /__studio/timeline/<film>/<cut>  the cut's timeline, built fresh from its script on every request
+ *   /__studio/films                  every <film>/<cut>
+ * A change to a cut.json, a script, the voice timing or the music reloads the stage and the player.
  */
 function studio(): Plugin {
   return {
@@ -21,7 +20,7 @@ function studio(): Plugin {
           res.setHeader('content-type', typeof body === 'string' ? 'text/plain' : 'application/json');
           res.end(typeof body === 'string' ? body : JSON.stringify(body));
         };
-        const m = url.match(/^\/__studio\/timeline\/([a-z0-9-]+)/);
+        const m = url.match(/^\/__studio\/timeline\/([a-z0-9-]+\/[a-z0-9-]+)/);
         if (m) {
           try {
             send(200, buildTimeline(m[1]));
@@ -31,17 +30,14 @@ function studio(): Plugin {
           return;
         }
         if (url.startsWith('/__studio/films')) {
-          const films = readdirSync(join(ROOT, 'films'), { withFileTypes: true })
-            .filter(d => d.isDirectory())
-            .map(d => d.name)
-            .filter(f => readdirSync(join(ROOT, 'films', f)).includes('script.json'));
-          send(200, films);
+          send(200, listFilms());
           return;
         }
         next();
       });
       const reloadOn = (file: string) =>
-        file.endsWith(`${sep}script.json`) ||
+        file.endsWith(`${sep}cut.json`) ||
+        (file.includes(`${sep}films${sep}`) && file.includes(`${sep}scripts${sep}`) && file.endsWith('.md')) ||
         file.endsWith(`${sep}voice${sep}timing.json`) ||
         file.endsWith(`${sep}music${sep}music.json`);
       const onChange = (file: string) => {

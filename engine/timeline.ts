@@ -1,10 +1,13 @@
-// The timeline a film plays against. Built by pipeline/timeline.ts from script.json and the voice
+// The timeline a film plays against. Built by pipeline/timeline.ts from the cut's script and the voice
 // clips; scenes read their own times from it, so changing a line's voice moves its animation too.
 
 export interface SceneTime {
   t0: number;
   t1: number;
+  /** Global numbers of the lines spoken in this scene, in order. */
   lines: number[];
+  /** The scene's heading in the script. */
+  title?: string;
 }
 
 export interface LineTime {
@@ -47,14 +50,14 @@ export function timeline(): Timeline {
 /** A scene's start and end. */
 export function scene(id: string): SceneTime {
   const s = timeline().scenes[id];
-  if (!s) throw new Error(`no scene "${id}" in the timeline (check script.json)`);
+  if (!s) throw new Error(`no scene "${id}" in the timeline (check the script)`);
   return s;
 }
 
 /** A narration line's spoken start (v0) and end (v1). */
 export function line(n: number): LineTime {
   const l = timeline().lines[String(n)];
-  if (!l) throw new Error(`no line ${n} in the timeline (check script.json)`);
+  if (!l) throw new Error(`no line ${n} in the timeline (check the script)`);
   return l;
 }
 

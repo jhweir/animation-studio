@@ -1,12 +1,12 @@
 // Line 5: the WE cube pops in at the centre, turning slowly under the isometric camera; mint glass
 // faces and edges; a caption below.
-import { clamp, defineScene, eback, line, onFrame, prog } from '../../../engine/index.ts';
-import { isometric, layer3d, loadModel } from '../../../engine/three.ts';
-import { caption } from '../../../styles/coasys/index.ts';
-import { glass } from '../../../styles/coasys/three.ts';
+import { clamp, defineScene, eback, onFrame, prog } from '../../../../../engine/index.ts';
+import { isometric, layer3d, loadModel } from '../../../../../engine/three.ts';
+import { caption } from '../../../../../styles/coasys/index.ts';
+import { glass } from '../../../../../styles/coasys/three.ts';
 
 export default defineScene('cube', ctx => {
-  const l5 = line(5);
+  const l5 = ctx.line(0);
   const { scene } = layer3d(ctx, { camera: isometric(10), name: 'we-cube' });
   const cube = loadModel('/assets/3d/we-cube.glb', model => glass(model, scene));
   scene.add(cube);

@@ -1,0 +1,47 @@
+{
+  "script": "scripts/example.md",
+  "style": "coasys",
+  "voice": {
+    "provider": "kokoro",
+    "voice": "am_michael"
+  },
+  "pronounce": {
+    "AD4M": "Adam"
+  },
+  "score": "coasys-ambient",
+  "scenes": {
+    "intro": {
+      "pace": "open",
+      "music": {
+        "mood": "shade",
+        "layers": [
+          "piano"
+        ]
+      }
+    },
+    "group": {
+      "music": {
+        "mood": "warm",
+        "layers": [
+          "arpeggio"
+        ],
+        "cut": true
+      }
+    },
+    "cube": {
+      "music": {
+        "mood": "lift"
+      }
+    },
+    "end": {
+      "pace": "end",
+      "hold": 1.5,
+      "music": {
+        "mood": "resolve",
+        "layers": [
+          "strings"
+        ]
+      }
+    }
+  }
+}

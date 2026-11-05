@@ -1,10 +1,10 @@
 // Line 1 as big words: "EVERY FRAME / IS A FUNCTION OF TIME", second row with a mint mark.
-import { defineScene, part } from '../../../engine/index.ts';
-import { beat } from '../../../styles/coasys/index.ts';
+import { defineScene } from '../../../../../engine/index.ts';
+import { beat } from '../../../../../styles/coasys/index.ts';
 
-export default defineScene('intro', ({ t0, t1, text }) => {
-  const a = part(1, 0);
-  const b = part(1, 1);
+export default defineScene('intro', ({ t0, t1, text, part }) => {
+  const a = part(0, 0);
+  const b = part(0, 1);
   beat(text, {
     name: 'headline',
     t0,

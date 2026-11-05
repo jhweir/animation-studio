@@ -14,7 +14,7 @@ It loads `stage.html?film=<name>` in an iframe, scales it to fit, and calls the 
 - **Hover names:** the nearest named element under the cursor is outlined and shown as
   `scene › name`. Clicking the stage copies `at 12.43s, group › bot` for a review note.
 - **Reloads keep your place:** the time lives in the URL hash, and Vite reloads the page whenever a
-  film file or `script.json` changes.
+  film file, `cut.json` or script changes.
 
 ## Rules
 
