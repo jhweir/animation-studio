@@ -85,7 +85,11 @@ function run(cmd: string, args: string[], input?: (stdin: NodeJS.WritableStream)
     p.stderr?.on('data', d => (err += d));
     p.on('error', reject);
     p.on('close', code => (code === 0 ? resolve() : reject(new Error(`${cmd} exited ${code}: ${err.slice(-800)}`))));
-    if (input) input(p.stdin!).then(() => p.stdin!.end(), reject);
+    if (input) {
+      // If the process dies mid-stream, writing raises EPIPE; let 'close' report its stderr instead.
+      p.stdin!.on('error', () => {});
+      input(p.stdin!).then(() => p.stdin!.end(), reject);
+    }
   });
 }
 
@@ -210,7 +214,8 @@ export async function video(s: Session, film: string, from = 0, to = s.meta.dura
   mkdirSync(dir, { recursive: true });
   const full = from === 0 && to >= s.meta.duration;
   const res = s.scale === 1 ? '' : `-${s.meta.height * s.scale}p`;
-  const out = join(dir, `${full ? film : `${film}-${stamp(from)}-${stamp(to)}`}${res}-picture.mp4`);
+  const name = film.replaceAll('/', '-'); // broken-app-paradigm/short -> broken-app-paradigm-short
+  const out = join(dir, `${full ? name : `${name}-${stamp(from)}-${stamp(to)}`}${res}-picture.mp4`);
   const n0 = Math.round(from * fps);
   const n1 = Math.round(to * fps);
   await run('ffmpeg', [
