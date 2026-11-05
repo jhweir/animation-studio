@@ -52,6 +52,18 @@ Mounted automatically: three drifting orbs and a vignette.
   tokens: translucent faces (mint, 0.18) with crisp edges (mint), plus soft light. Returns
   `{ faces, edges }` materials to animate. Use it as `loadModel(url, m => glass(m, scene))`.
 
+## Globe (`globe.ts`, import directly)
+
+- `globe(parent, { cx, cy, r, view: t => [lon, lat], zoom?, name? })`: a line-drawn orthographic
+  globe of Natural Earth land, turning with `t`. Create it before anything placed on it. Returns
+  `{ g, projection, path, radius(), xy(lonLat), facing(lonLat) }`: `xy` is a point's stage position,
+  `facing` is 1 at the disc's centre, 0 at the rim, below 0 behind (hide things there).
+- `landPoints(n, seed, box?)`: n seeded random points on land, optionally inside a lon/lat box.
+- `rootNetwork({ origins, seed, trunks?, length?, step?, depth?, wander?, branching?, bearings? })`:
+  branching roots growing out from origins; each branch has a `born` and `span` within 0..1.
+- `grownPart(branch, u)`: the part grown at network progress `u`, as GeoJSON for `globe.path`.
+- `destination(lonLat, bearing, degrees)`: a point along a great circle.
+
 ## Placeholder (`placeholder.ts`)
 
 The style's stand-in for a scene a cut hasn't built: the section title and its narration, sentence

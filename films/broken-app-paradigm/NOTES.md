@@ -20,7 +20,7 @@ These scripts are now the source of the words; the drafts in the planning notes 
 
 | scene | state |
 |---|---|
-| their-ground (1) | being animated |
+| their-ground (1) | first draft, waiting for James's review |
 | users (2) … end-card | placeholders |
 
 ## Decisions
@@ -34,6 +34,18 @@ These scripts are now the source of the words; the drafts in the planning notes 
 
 A globe; three company buildings; grey roots spreading across the planet like a nervous system,
 contrasted with mint for healthy, living alternatives that appear and fade.
+
+## Section 1, first draft (2026-11-05)
+
+Globe turning slowly (centre lon 12° drifting east, lat 16°); three steel towers rise on "companies";
+320 people dots on land; grey roots creep from the towers' feet over "crept in slowly" and reach
+everyone by the end of "no way to push back" (people turn steel as they're reached); pulses run
+back along the main roots. Mint sprouts flicker and fade on "keep appearing, and keep fading";
+three small mint towers rise and fade on "one company, one sealed app". Towers grow and roots
+thicken on "size and attention win" (big words, art dimmed). A red crack on "broken"; the globe
+lifts and shrinks, and "the people who use them" / "the people who build them" appear below.
+
+Towers and small towers are drawn in the scene for now; promote them to the style if they recur.
 
 ## Open tweaks
 
