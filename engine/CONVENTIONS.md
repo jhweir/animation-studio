@@ -14,6 +14,7 @@ brand: that belongs to a style.
 | `frame.ts` | `onFrame`, `afterFrame`, `cue`, `waitFor`, and the render loop (a frame that waited on a load is drawn again once it lands) |
 | `film.ts` | `defineScene`, `defineFilm`, the `Style` contract, the stage and its layers |
 | `three.ts` | 3D: `layer3d(ctx)` (a WebGL canvas per scene, rendered after each frame), `isometric`/`perspective` cameras, `loadModel`, `meshes`; import it directly, only in scenes that use 3D |
+| `race.ts` | `race(series, { rows, swap?, fade? })`: values over time ranked at any moment, for a bar-chart race. Data only: straight lines between points, `hold` or `end` after the last, smoothed rank positions (`pos`) so swaps slide. A style draws it |
 | `env.ts` | `capturing`: true while the renderer captures frames; for *how* to draw only, never *what* |
 | `boot.ts` | the entry of `stage.html`: loads a film and exposes `window.studio` |
 | `index.ts` | the public API; scenes and styles import from `engine/index.ts` only |
