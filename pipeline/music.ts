@@ -35,7 +35,7 @@ export interface MusicStats {
 }
 
 export async function makeMusic(film: string, script: Script, tl: Timeline, cues: Cue[]): Promise<MusicStats> {
-  if (!script.score) throw new Error(`films/${film}/script.json has no "score"`);
+  if (!script.score) throw new Error(`${film}: cut.json has no "score"`);
   const scorePath = join(ROOT, 'scores', script.score, 'score.py');
   if (!existsSync(scorePath)) throw new Error(`no score "${script.score}" (scores/${script.score}/score.py)`);
   if (!existsSync(VENV_PY)) throw new Error('music needs the Python venv: run pipeline/voice/setup.sh');
