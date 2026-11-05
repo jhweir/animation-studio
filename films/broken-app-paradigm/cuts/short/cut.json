@@ -1,0 +1,16 @@
+{
+  "script": "scripts/2026-11-05-short.md",
+  "style": "coasys",
+  "voice": { "provider": "kokoro", "voice": "am_michael" },
+  "score": "coasys-ambient",
+  "scenes": {
+    "their-ground": { "pace": "open", "music": { "mood": "shade", "layers": ["piano"] } },
+    "users": { "music": { "mood": "dark", "layers": ["heartbeat"] } },
+    "builders": { "music": { "mood": "dark", "layers": ["heartbeat"] } },
+    "root-cause": { "pace": "calm", "music": { "mood": "lift" } },
+    "other-fields": { "music": { "mood": "warm", "layers": ["arpeggio"], "cut": true } },
+    "what-changes": { "music": { "mood": "warm", "layers": ["arpeggio"] } },
+    "living-system": { "music": { "mood": "warm", "layers": ["strings"] } },
+    "end-card": { "pace": "end", "hold": 3, "music": { "mood": "resolve", "layers": ["strings"] } }
+  }
+}
