@@ -1,0 +1,48 @@
+platform,owner,from_date,to_date
+Friendster,"Friendster, Inc.",2002,2009-12-09
+Friendster,MOL Global,2009-12-09,2015-06-14
+MySpace,eUniverse / Intermix Media,2003-08,2005-09
+MySpace,News Corporation,2005-09,2011-06-29
+MySpace,Specific Media (renamed Viant),2011-06-29,2016-02-11
+MySpace,Time Inc.,2016-02-11,2018-01-31
+MySpace,Meredith Corporation (via Time Inc.),2018-01-31,
+Orkut,Google,2004-01-24,2014-09-30
+Hi5,"Hi5 Networks, Inc.",2003,2011-12-14
+Hi5,Tagged (if(we)),2011-12-14,2017
+Hi5,The Meet Group (formerly MeetMe),2017,
+Facebook,"Facebook, Inc.",2004-02-04,2021-10-28
+Facebook,"Meta Platforms, Inc. (Facebook, Inc. renamed)",2021-10-28,
+YouTube,"YouTube, Inc.",2005-02,2006-11-13
+YouTube,Google (Alphabet subsidiary from 2015-10-02),2006-11-13,
+Twitter/X,"Twitter, Inc.",2006-03,2022-10-27
+Twitter/X,X Corp. (Elon Musk); renamed X on 2023-07-23,2022-10-27,2025-03-28
+Twitter/X,X.AI Holdings (xAI),2025-03-28,2026-02-02
+Twitter/X,SpaceX (via xAI),2026-02-02,
+Tumblr,"Tumblr, Inc.",2007-02,2013-06-20
+Tumblr,Yahoo,2013-06-20,2017-06-13
+Tumblr,Verizon (Oath / Verizon Media),2017-06-13,2019-08-12
+Tumblr,Automattic,2019-08-12,
+Instagram,"Instagram, Inc.",2010-10-06,2012-09-06
+Instagram,"Facebook, Inc. / Meta Platforms",2012-09-06,
+WhatsApp,"WhatsApp, Inc.",2009-02,2014-10-06
+WhatsApp,"Facebook, Inc. / Meta Platforms",2014-10-06,
+Facebook Messenger,"Facebook, Inc. / Meta Platforms",2011-08-09,
+Threads,Meta Platforms,2023-07-05,
+WeChat,Tencent,2011-01-21,
+QQ,Tencent,1999-02,
+Qzone,Tencent,2005,
+Google+,Google,2011-06-28,2019-04-02
+LinkedIn,LinkedIn Corporation,2003-05-05,2016-12-08
+LinkedIn,Microsoft,2016-12-08,
+Snapchat,Snapchat Inc. (renamed Snap Inc. 2016-09),2011-09,
+Pinterest,"Pinterest, Inc.",2010-03,
+Reddit,Founders (Huffman / Ohanian),2005-06,2006-10-31
+Reddit,Condé Nast / Advance Publications,2006-10-31,2011-09
+Reddit,"Reddit, Inc. (independent; Advance Publications majority)",2011-09,2024-03-21
+Reddit,"Reddit, Inc. (public, NYSE: RDDT)",2024-03-21,
+Telegram,Telegram (Pavel and Nikolai Durov),2013-08-14,
+TikTok,ByteDance (global; merged with Musical.ly 2018-08-02),2017-09,
+TikTok,TikTok USDS Joint Venture (US operations only; ByteDance 19.9%),2026-01-22,
+Douyin,ByteDance,2016-09,
+Mastodon,Mastodon gGmbH (software; each server independently run),2016-10,
+Bluesky,Bluesky Social PBC,2021-10,

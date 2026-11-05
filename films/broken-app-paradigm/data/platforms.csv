@@ -1,0 +1,206 @@
+platform,owner,year,users_millions,metric,status,source_id
+Facebook,"Facebook, Inc.",2004,1,mau,reported,1
+Facebook,"Facebook, Inc.",2005,6,mau,reported,1
+Facebook,"Facebook, Inc.",2006,12,mau,reported,1
+Facebook,"Facebook, Inc.",2007,58,mau,reported,1
+Facebook,"Facebook, Inc.",2008,145,mau,reported,1
+Facebook,"Facebook, Inc.",2009,360,mau,reported,1
+Facebook,"Facebook, Inc.",2010,608,mau,reported,1
+Facebook,"Facebook, Inc.",2011,845,mau,reported,1
+Facebook,"Facebook, Inc.",2012,1060,mau,reported,2
+Facebook,"Facebook, Inc.",2013,1230,mau,reported,3
+Facebook,"Facebook, Inc.",2014,1390,mau,reported,4
+Facebook,"Facebook, Inc.",2015,1590,mau,reported,5
+Facebook,"Facebook, Inc.",2016,1860,mau,reported,6
+Facebook,"Facebook, Inc.",2017,2130,mau,reported,7
+Facebook,"Facebook, Inc.",2018,2320,mau,reported,8
+Facebook,"Facebook, Inc.",2019,2500,mau,reported,9
+Facebook,"Facebook, Inc.",2020,2800,mau,reported,10
+Facebook,Meta Platforms,2021,2910,mau,reported,11
+Facebook,Meta Platforms,2022,2960,mau,reported,12
+Facebook,Meta Platforms,2023,3070,mau,reported,13
+Instagram,"Instagram, Inc.",2010,1,registered,reported,14
+Instagram,"Instagram, Inc.",2011,10,registered,reported,15
+Instagram,"Facebook, Inc.",2012,90,mau,reported,16
+Instagram,"Facebook, Inc.",2013,150,mau,reported,17
+Instagram,"Facebook, Inc.",2014,300,mau,reported,18
+Instagram,"Facebook, Inc.",2015,400,mau,reported,19
+Instagram,"Facebook, Inc.",2016,600,mau,reported,20
+Instagram,"Facebook, Inc.",2017,800,mau,reported,21
+Instagram,"Facebook, Inc.",2018,1000,mau,reported,21
+Instagram,Meta Platforms,2022,2000,mau,reported,22
+Instagram,Meta Platforms,2025,3000,mau,reported,23
+WhatsApp,"WhatsApp, Inc.",2013,400,mau,reported,24
+WhatsApp,"Facebook, Inc.",2014,700,mau,reported,25
+WhatsApp,"Facebook, Inc.",2015,1000,mau,reported,26
+WhatsApp,"Facebook, Inc.",2016,1200,mau,reported,27
+WhatsApp,"Facebook, Inc.",2017,1500,mau,reported,28
+WhatsApp,"Facebook, Inc.",2019,2000,mau,reported,29
+WhatsApp,Meta Platforms,2025,3000,mau,reported,30
+Facebook Messenger,"Facebook, Inc.",2014,500,mau,reported,31
+Facebook Messenger,"Facebook, Inc.",2015,800,mau,reported,31
+Facebook Messenger,"Facebook, Inc.",2016,1000,mau,reported,32
+Facebook Messenger,"Facebook, Inc.",2017,1300,mau,reported,33
+Threads,Meta Platforms,2023,130,mau,reported,34
+Threads,Meta Platforms,2024,320,mau,reported,35
+Threads,Meta Platforms,2025,400,mau,reported,36
+Telegram,Telegram (Pavel Durov),2014,50,other,reported,37
+Telegram,Telegram (Pavel Durov),2015,60,other,reported,38
+Telegram,Telegram (Pavel Durov),2016,100,mau,reported,39
+Telegram,Telegram (Pavel Durov),2017,180,mau,reported,40
+Telegram,Telegram (Pavel Durov),2018,200,mau,reported,41
+Telegram,Telegram (Pavel Durov),2019,300,mau,reported,42
+Telegram,Telegram (Pavel Durov),2020,500,mau,reported,43
+Telegram,Telegram (Pavel Durov),2022,700,mau,reported,44
+Telegram,Telegram (Pavel Durov),2023,800,mau,reported,45
+Telegram,Telegram (Pavel Durov),2024,950,mau,reported,46
+Telegram,Telegram (Pavel Durov),2025,1000,mau,reported,47
+Mastodon,Mastodon gGmbH (software; servers run independently),2022,1.82,mau,reported,48
+Mastodon,Mastodon gGmbH (software; servers run independently),2023,1.54,mau,reported,49
+Mastodon,Mastodon gGmbH (software; servers run independently),2024,0.85,mau,reported,50
+Mastodon,Mastodon gGmbH (software; servers run independently),2025,0.73,mau,reported,51
+Bluesky,Bluesky Social PBC,2023,2.89,registered,reported,52
+Bluesky,Bluesky Social PBC,2024,25.94,registered,reported,52
+Bluesky,Bluesky Social PBC,2025,41.41,registered,reported,53
+WeChat,Tencent,2013,355,mau,reported,63
+WeChat,Tencent,2014,500,mau,reported,64
+WeChat,Tencent,2015,697,mau,reported,65
+WeChat,Tencent,2016,889,mau,reported,66
+WeChat,Tencent,2017,988.6,mau,reported,67
+WeChat,Tencent,2018,1097.6,mau,reported,69
+WeChat,Tencent,2019,1164.8,mau,reported,69
+WeChat,Tencent,2020,1225.0,mau,reported,70
+WeChat,Tencent,2021,1268.2,mau,reported,71
+WeChat,Tencent,2022,1313.2,mau,reported,72
+WeChat,Tencent,2023,1343,mau,reported,73
+WeChat,Tencent,2024,1385,mau,reported,74
+WeChat,Tencent,2025,1418,mau,reported,75
+QQ,Tencent,2004,135,other,reported,54
+QQ,Tencent,2005,201.9,other,reported,55
+QQ,Tencent,2006,232.6,other,reported,56
+QQ,Tencent,2007,300.2,other,reported,57
+QQ,Tencent,2008,376.6,other,reported,58
+QQ,Tencent,2009,522.9,other,reported,59
+QQ,Tencent,2010,647.6,other,reported,60
+QQ,Tencent,2011,721.0,other,reported,61
+QQ,Tencent,2012,798.2,mau,reported,62
+QQ,Tencent,2013,808,mau,reported,63
+QQ,Tencent,2014,815,mau,reported,64
+QQ,Tencent,2015,853,mau,reported,65
+QQ,Tencent,2016,868,mau,reported,66
+QQ,Tencent,2017,783.4,mau,reported,68
+QQ,Tencent,2018,807.1,mau,reported,68
+QQ,Tencent,2019,647.0,mau,reported,69
+QQ,Tencent,2020,594.9,mau,reported,70
+QQ,Tencent,2021,552.1,mau,reported,71
+QQ,Tencent,2022,572.1,mau,reported,72
+QQ,Tencent,2023,554,mau,reported,73
+QQ,Tencent,2024,524,mau,reported,74
+QQ,Tencent,2025,508,mau,reported,75
+Qzone,Tencent,2009,387.8,other,reported,59
+Qzone,Tencent,2010,492.0,other,reported,60
+Qzone,Tencent,2011,552.1,other,reported,61
+Qzone,Tencent,2012,602.7,mau,reported,62
+Qzone,Tencent,2013,625,mau,reported,63
+Qzone,Tencent,2014,654,mau,reported,64
+Qzone,Tencent,2015,640,mau,reported,65
+Qzone,Tencent,2016,638,mau,reported,66
+Qzone,Tencent,2017,563,mau,reported,67
+Qzone,Tencent,2018,532.4,mau,reported,68
+TikTok,ByteDance,2018,271.19,mau,reported,76
+TikTok,ByteDance,2019,507.55,mau,reported,76
+TikTok,ByteDance,2020,689.17,mau,reported,76
+TikTok,ByteDance,2021,1000,mau,reported,77
+Douyin,ByteDance,2018,250,dau,reported,78
+Douyin,ByteDance,2019,400,dau,reported,79
+Douyin,ByteDance,2020,600,dau,reported,80
+Twitter/X,"Twitter, Inc.",2010,54,mau,reported,81
+Twitter/X,"Twitter, Inc.",2011,117,mau,reported,81
+Twitter/X,"Twitter, Inc.",2012,184.9,mau,reported,82
+Twitter/X,"Twitter, Inc.",2013,240.9,mau,reported,82
+Twitter/X,"Twitter, Inc.",2014,288,mau,reported,83
+Twitter/X,"Twitter, Inc.",2015,305,mau,reported,85
+Twitter/X,"Twitter, Inc.",2016,319,mau,reported,85
+Twitter/X,"Twitter, Inc.",2017,330,mau,reported,86
+Twitter/X,"Twitter, Inc.",2018,321,mau,reported,87
+Twitter/X,"Twitter, Inc.",2019,152,dau,reported,88
+Twitter/X,"Twitter, Inc.",2020,190.9,dau,reported,89
+Twitter/X,"Twitter, Inc.",2021,214.7,dau,reported,89
+Twitter/X,"Twitter, Inc.",2022,237.8,dau,reported,90
+Twitter/X,X Corp. (Elon Musk),2023,540,mau,reported,91
+Twitter/X,X Corp. (Elon Musk),2024,570,mau,reported,92
+Twitter/X,X.AI Holdings (xAI),2025,600,mau,reported,93
+Snapchat,Snapchat Inc.,2014,71,dau,reported,94
+Snapchat,Snapchat Inc.,2015,107,dau,reported,94
+Snapchat,Snap Inc.,2016,158,dau,reported,94
+Snapchat,Snap Inc.,2017,187,dau,reported,95
+Snapchat,Snap Inc.,2018,186,dau,reported,96
+Snapchat,Snap Inc.,2019,218,dau,reported,97
+Snapchat,Snap Inc.,2020,265,dau,reported,98
+Snapchat,Snap Inc.,2021,319,dau,reported,99
+Snapchat,Snap Inc.,2022,375,dau,reported,100
+Snapchat,Snap Inc.,2023,414,dau,reported,101
+Snapchat,Snap Inc.,2024,453,dau,reported,102
+Snapchat,Snap Inc.,2025,474,dau,reported,103
+Pinterest,"Pinterest, Inc.",2015,100,mau,reported,106
+Pinterest,"Pinterest, Inc.",2016,160,mau,reported,107
+Pinterest,"Pinterest, Inc.",2017,216,mau,reported,107
+Pinterest,"Pinterest, Inc.",2018,265,mau,reported,107
+Pinterest,"Pinterest, Inc.",2019,335,mau,reported,108
+Pinterest,"Pinterest, Inc.",2020,459,mau,reported,109
+Pinterest,"Pinterest, Inc.",2021,431,mau,reported,110
+Pinterest,"Pinterest, Inc.",2022,450,mau,reported,111
+Pinterest,"Pinterest, Inc.",2023,498,mau,reported,112
+Pinterest,"Pinterest, Inc.",2024,553,mau,reported,113
+Pinterest,"Pinterest, Inc.",2025,619,mau,reported,114
+Reddit,"Reddit, Inc. (Advance Publications majority)",2018,330,mau,reported,115
+Reddit,"Reddit, Inc. (Advance Publications majority)",2019,430,mau,reported,115
+Reddit,"Reddit, Inc. (Advance Publications majority)",2020,52,dau,reported,116
+Reddit,"Reddit, Inc. (Advance Publications majority)",2021,53.9,dau,reported,117
+Reddit,"Reddit, Inc. (Advance Publications majority)",2022,57.5,dau,reported,117
+Reddit,"Reddit, Inc. (Advance Publications majority)",2023,73.1,dau,reported,117
+Reddit,"Reddit, Inc. (public)",2024,101.7,dau,reported,118
+Reddit,"Reddit, Inc. (public)",2025,121.4,dau,reported,119
+LinkedIn,LinkedIn Corporation,2005,4.148,registered,reported,120
+LinkedIn,LinkedIn Corporation,2006,7.885,registered,reported,120
+LinkedIn,LinkedIn Corporation,2007,16.712,registered,reported,120
+LinkedIn,LinkedIn Corporation,2008,32.307,registered,reported,120
+LinkedIn,LinkedIn Corporation,2009,55.111,registered,reported,120
+LinkedIn,LinkedIn Corporation,2010,90.437,registered,reported,121
+LinkedIn,LinkedIn Corporation,2011,144.974,registered,reported,121
+LinkedIn,LinkedIn Corporation,2012,201.912,registered,reported,122
+LinkedIn,LinkedIn Corporation,2013,276.842,registered,reported,123
+LinkedIn,LinkedIn Corporation,2014,346.731,registered,reported,124
+LinkedIn,LinkedIn Corporation,2015,413.671,registered,reported,125
+LinkedIn,Microsoft,2020,700,registered,reported,126
+LinkedIn,Microsoft,2021,750,registered,reported,127
+LinkedIn,Microsoft,2022,850,registered,reported,128
+LinkedIn,Microsoft,2023,1000,registered,reported,129
+MySpace,News Corporation,2006,66.4,other,secondary,130
+MySpace,News Corporation,2007,114.1,other,secondary,130
+MySpace,News Corporation,2008,125,other,secondary,131
+MySpace,News Corporation,2009,68.4,other,reported,132
+MySpace,News Corporation,2010,101,other,reported,133
+MySpace,News Corporation,2011,74,other,secondary,134
+Friendster,"Friendster, Inc.",2006,14.9,other,secondary,130
+Friendster,"Friendster, Inc.",2007,24.7,other,secondary,130
+Friendster,"Friendster, Inc.",2008,31,other,secondary,135
+Friendster,"Friendster, Inc.",2009,75,registered,reported,136
+Hi5,"Hi5 Networks, Inc.",2006,18.1,other,secondary,130
+Hi5,"Hi5 Networks, Inc.",2007,28.2,other,secondary,130
+Hi5,"Hi5 Networks, Inc.",2008,58,other,secondary,135
+Orkut,Google,2006,13.6,other,secondary,130
+Orkut,Google,2007,24.1,other,secondary,130
+Orkut,Google,2008,46,other,secondary,135
+Orkut,Google,2010,32.7,other,secondary,137
+Orkut,Google,2011,34.4,other,secondary,137
+Tumblr,"Tumblr, Inc.",2013,300,other,reported,138
+Tumblr,Automattic,2023,11.5,mau,secondary,139
+Google+,Google,2011,90,registered,reported,140
+Google+,Google,2012,135,mau,reported,141
+Google+,Google,2013,300,mau,reported,142
+YouTube,"YouTube, Inc.",2006,81.0,other,secondary,143
+YouTube,Google,2013,1000,mau,reported,144
+YouTube,Google (Alphabet),2017,1500,mau,reported,145
+YouTube,Google (Alphabet),2018,1800,mau,reported,146
+YouTube,Google (Alphabet),2019,2000,mau,reported,147
