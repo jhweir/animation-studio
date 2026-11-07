@@ -1,0 +1,46 @@
+/* Chalk: tokens as CSS variables (keep in step with tokens.ts), the font, captions, the title and
+   the placeholder. Scoped to #stage. */
+
+@font-face {
+  font-family: 'Inter';
+  font-weight: 100 900;
+  font-style: normal;
+  src: url('./fonts/Inter-latin-var.woff2') format('woff2');
+}
+
+#stage {
+  --bg: #0f1217; --ink: #e9e4d6; --muted: #5f6672; --dim: #3a404a; --card: #1a1f27;
+  --a1: #5ef2b0; --a2: #4fc3f7; --a3: #b18cff;
+  --font: 'Inter', system-ui, sans-serif;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+#stage * { box-sizing: border-box; }
+#stage svg text { font-family: var(--font); }
+
+#stage .vignette { position: absolute; inset: 0;
+  background: radial-gradient(ellipse 75% 75% at 50% 45%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, .5) 100%); }
+
+/* Captions: one light line low on the stage */
+#stage .say { position: absolute; left: 0; width: 100%; text-align: center; font-size: 50px; font-weight: 300;
+  white-space: nowrap; }
+#stage .say em { font-style: normal; background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* The title: light, in the aurora */
+#stage .title { position: absolute; left: 0; width: 100%; text-align: center; font-size: 76px; font-weight: 300;
+  white-space: nowrap; }
+#stage .title span { background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* Placeholder for a scene not built yet (placeholder.ts) */
+#stage .placeholder { position: absolute; inset: 0; }
+#stage .ph-tag { position: absolute; right: 48px; top: 40px; font-size: 20px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted); }
+#stage .ph-title { position: absolute; left: 0; width: 100%; top: 250px; text-align: center; font-size: 26px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+#stage .ph-line { position: absolute; left: 50%; top: 340px; width: 1360px; transform: translateX(-50%); text-align: center;
+  font-size: 44px; font-weight: 300; line-height: 1.3; }
