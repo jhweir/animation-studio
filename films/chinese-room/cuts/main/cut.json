@@ -1,0 +1,16 @@
+{
+  "script": "scripts/2026-11-07-systems-reply.md",
+  "style": "chalk",
+  "voice": { "provider": "kokoro", "voice": "am_michael" },
+  "score": "coasys-ambient",
+  "scenes": {
+    "question": { "pace": "open", "music": { "mood": "shade", "layers": ["piano"] } },
+    "room": { "music": { "mood": "shade" } },
+    "conclusion": { "music": { "mood": "dark" } },
+    "scale": { "music": { "mood": "dark", "layers": ["heartbeat"] } },
+    "systems": { "music": { "mood": "lift", "layers": ["arpeggio"], "cut": true } },
+    "comeback": { "music": { "mood": "warm", "layers": ["arpeggio"] } },
+    "shows": { "music": { "mood": "warm", "layers": ["strings"] } },
+    "close": { "pace": "end", "hold": 3, "music": { "mood": "resolve", "layers": ["strings"] } }
+  }
+}
