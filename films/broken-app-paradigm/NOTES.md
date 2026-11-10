@@ -9,6 +9,14 @@ the open, living alternative. Video 2 (how WE works) follows.
   render of it ran 5.5–6 min and felt long.
 - `scripts/2026-11-05-short.md`: the short version, the one being built. Section 1 settled on
   2026-11-04. Sections 2–7 are the first short draft and still to be worked through one by one.
+- 2026-11-10 alternative framings, written while rethinking the film's angle (none built yet):
+  - `scripts/2026-11-10-full.md`: v2 full (1,264 words, about 7:50). Adds stakes, misalignment,
+    network effects, past platform openings, why now. Too long; carries two theses.
+  - `scripts/2026-11-10-focused.md`: v2 narrowed to the app paradigm (883 words, about 5:30).
+  - `scripts/2026-11-10-evolve.md`: written fresh around "social software can't evolve"
+    (variation, selection, inheritance), with a mutual-aid group as the thread (899 words, about
+    5:35). James's favourite so far. The wider stakes and the evolutionary philosophy moved to a
+    companion film, `films/learning-to-evolve`.
 
 These scripts are now the source of the words; the drafts in the planning notes are history.
 
