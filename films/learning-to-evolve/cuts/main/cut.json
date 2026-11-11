@@ -1,0 +1,17 @@
+{
+  "script": "scripts/2026-11-10-focused.md",
+  "style": "coasys",
+  "voice": { "provider": "kokoro", "voice": "am_michael" },
+  "score": "coasys-ambient",
+  "scenes": {
+    "already-evolves": { "pace": "open", "music": { "mood": "shade", "layers": ["piano"] } },
+    "by-death": { "music": { "mood": "dark", "layers": ["heartbeat"] } },
+    "life-sped-up": { "music": { "mood": "lift", "layers": ["arpeggio"], "cut": true } },
+    "bottom-rung": { "music": { "mood": "shade" } },
+    "climbing": { "music": { "mood": "warm", "layers": ["arpeggio"], "cut": true } },
+    "who-selects": { "music": { "mood": "warm" } },
+    "why-it-matters": { "music": { "mood": "warm", "layers": ["strings"] } },
+    "close": { "pace": "calm", "music": { "mood": "resolve", "layers": ["strings"] } },
+    "end-card": { "pace": "end", "hold": 3, "music": { "mood": "resolve", "layers": ["strings"] } }
+  }
+}
