@@ -84,6 +84,19 @@ export default defineScene('their-ground', ({ t0, t1, art, ui, text, line, part,
 - A scene in the script that the cut hasn't built yet shows the style's placeholder: its title and
   its narration, timed to the voice. List a scene in `film.ts` once it's built.
 
+## Storyboards
+
+Board a film in its real cut, so the drawings become the animation once they're approved:
+
+- Build each scene as its key poses first (layout, drawings, simple moves between poses), and mark
+  each pose in the scene's setup with `board(t, 'what the frame shows')`.
+- `pnpm film board <film> [--scene <id>]` renders every marked frame, with its scene, the narration
+  spoken at that moment and its note, to `build/<film>/<cut>/board/`: one PNG per frame, `index.html`
+  (open it in a browser) and `board.png` (the whole board as one image). A scene with no `board()`
+  frames gets one at its middle (its placeholder, until it's built).
+- Rough drawing pieces made for a board can live in the cut (e.g. `cuts/<cut>/kit.ts`) while the
+  imagery is being explored; move what's approved into the style.
+
 ## NOTES.md
 
 Short and current, so a fresh session can pick the film up without the old conversation:

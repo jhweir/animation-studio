@@ -58,3 +58,24 @@ export function cue(t: number, kind: string, extra: Record<string, unknown> = {}
 export function allCues(): Cue[] {
   return cues.slice().sort((a, b) => a.t - b.t);
 }
+
+export interface BoardFrame {
+  t: number;
+  /** What the frame should show, for whoever reviews the storyboard. */
+  note: string;
+}
+
+const boardFrames: BoardFrame[] = [];
+
+/**
+ * A storyboard frame at time t: a key pose worth reviewing, with a note on what it shows.
+ * `pnpm film board` renders every one, with its narration line and note. Register in a scene's
+ * setup, not in onFrame.
+ */
+export function board(t: number, note: string): void {
+  boardFrames.push({ t: +t.toFixed(3), note });
+}
+
+export function allBoard(): BoardFrame[] {
+  return boardFrames.slice().sort((a, b) => a.t - b.t);
+}

@@ -4,6 +4,7 @@
 //   stills <film> <t1,t2,…>               PNG stills at those seconds
 //   sheet <film> [--at t1,t2,…] [--n 12]  one contact sheet (default: 12 frames across the film)
 //   sheet <film> --scene <id> [--n 8]     a contact sheet across one scene
+//   board <film> [--scene <id>]           the storyboard: every board() frame with its narration and note
 //   video <film> [--from s] [--to s]      the film, or a section of it, as an mp4 with voice and music
 //   --scale 2                             (stills, video) capture at double density: 4K from a 1080p stage
 //   voice <film> [--force]                voice new or changed lines (draft voice and recorded takes)
@@ -13,7 +14,7 @@
 // Quiet by default: prints output paths and a one-line summary.
 import { join, relative } from 'node:path';
 import { makeMusic } from './music.ts';
-import { mixTrack, mux, open, sheet, stills, video, voiceTrack } from './render.ts';
+import { mixTrack, mux, open, sheet, stills, storyboard, video, voiceTrack } from './render.ts';
 import { loadScript, resolveFilm, ROOT } from './script.ts';
 import { buildTimeline } from './timeline.ts';
 import { voiceFilm, voiceSamples } from './voice.ts';
@@ -35,7 +36,7 @@ const spread = (a: number, b: number, n: number) =>
 
 async function main(): Promise<void> {
   if (!cmd || !arg) {
-    console.log('usage: pnpm film <timeline|stills|sheet|video|voice|voice-samples> <film> [options]  (see pipeline/cli.ts)');
+    console.log('usage: pnpm film <timeline|stills|sheet|board|video|voice|voice-samples> <film> [options]  (see pipeline/cli.ts)');
     process.exit(2);
   }
   if (cmd === 'voice-samples') {
@@ -89,6 +90,11 @@ async function main(): Promise<void> {
         at = spread(r.t0, r.t1, n);
       } else at = spread(0, tl.duration, n);
       console.log(rel(await sheet(s, film, at)));
+    } else if (cmd === 'board') {
+      const r = await storyboard(s, film, opt('scene'));
+      console.log(rel(r.html));
+      console.log(rel(r.sheet));
+      if (r.unboarded.length) console.log(`not boarded yet: ${r.unboarded.join(', ')}`);
     } else if (cmd === 'video') {
       const from = Number(opt('from') ?? 0);
       const to = Number(opt('to') ?? tl.duration);

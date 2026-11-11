@@ -4,7 +4,7 @@ export * from './color.ts';
 export * from './dom.ts';
 export { capturing } from './env.ts';
 export * from './race.ts';
-export { onFrame, cue, waitFor, type Cue } from './frame.ts';
+export { onFrame, cue, board, waitFor, type Cue, type BoardFrame } from './frame.ts';
 export { scene, line, part, timeline, type Timeline, type SceneTime, type LineTime } from './timeline.ts';
 export {
   defineScene,

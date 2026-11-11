@@ -7,7 +7,7 @@ strips the types), so only erasable TypeScript here: no enums, no parameter prop
 |---|---|
 | `script.ts` | film ids, the markdown script parser, `cut.json`, pace presets, validation, film and build paths |
 | `timeline.ts` | `buildTimeline(film)`: scenes and lines laid end to end from voice clips or reading-time estimates |
-| `render.ts` | starts the dev server and headless Chrome; `stills`, `sheet` (contact sheet), `video` |
+| `render.ts` | starts the dev server and headless Chrome; `stills`, `sheet` (contact sheet), `storyboard`, `video` |
 | `cli.ts` | `pnpm film <command> <film>`; see the header for commands |
 | `voice.ts` | the voice step: recorded takes, Kokoro drafts, `timing.json`; voice samples |
 | `voice/kokoro.py` | Kokoro TTS in the repo's `.venv` (set up once with `voice/setup.sh`) |

@@ -19,6 +19,7 @@ pnpm film voice example                    # voice new or changed lines
 pnpm film music example                    # render the music with the film's score
 pnpm film stills example 2,6,10            # PNG stills at those seconds
 pnpm film sheet example                    # one contact sheet across the whole film
+pnpm film board example                    # the storyboard: every board() frame with its narration and note
 pnpm film video example                    # the full film as an mp4
 pnpm film video example --from 4 --to 9    # one section
 ```

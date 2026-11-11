@@ -5,11 +5,11 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium, type Browser, type CDPSession, type Page } from 'playwright-core';
 import { createServer, type ViteDevServer } from 'vite';
-import type { Cue } from '../engine/frame.ts';
+import type { BoardFrame, Cue } from '../engine/frame.ts';
 import type { Timeline } from '../engine/timeline.ts';
 import { buildDir, ROOT } from './script.ts';
 
-type Meta = Timeline & { cues: Cue[] };
+type Meta = Timeline & { cues: Cue[]; board: BoardFrame[] };
 
 export interface Session {
   meta: Meta;
@@ -108,8 +108,11 @@ export async function stills(s: Session, film: string, times: number[]): Promise
   return out;
 }
 
-/** One contact sheet: small frames at the given times, each labelled with its time. */
-export async function sheet(s: Session, film: string, times: number[], maxCols = 4): Promise<string> {
+/**
+ * One contact sheet: small frames at the given times, each labelled with its time (or with `labels`,
+ * one per frame). Written to build/<film>/<cut>/sheets/ unless `out` is given.
+ */
+export async function sheet(s: Session, film: string, times: number[], maxCols = 4, o: { labels?: string[]; out?: string } = {}): Promise<string> {
   const cols = Math.min(maxCols, times.length);
   const tmp = join(buildDir(film), 'sheets', 'tmp');
   rmSync(tmp, { recursive: true, force: true });
@@ -119,11 +122,15 @@ export async function sheet(s: Session, film: string, times: number[], maxCols =
   writeFileSync(label, times.map(t => t.toFixed(1)).join('\n'));
   const rows = Math.ceil(times.length / cols);
   const font = join(ROOT, 'styles', 'coasys', 'fonts', 'DMSans-var.ttf');
-  const out = join(buildDir(film), 'sheets', `sheet-${stamp(times[0])}-${stamp(times[times.length - 1])}.png`);
+  const out = o.out ?? join(buildDir(film), 'sheets', `sheet-${stamp(times[0])}-${stamp(times[times.length - 1])}.png`);
   // Each frame: scaled to 480 wide, its time in the corner; then tiled.
   const inputs = times.flatMap((_, i) => ['-i', join(tmp, `f-${String(i).padStart(3, '0')}.png`)]);
   const scaled = times
-    .map((t, i) => `[${i}:v]scale=480:-1,drawtext=fontfile='${font}':text='${t.toFixed(1)}s':x=10:y=10:fontsize=22:fontcolor=white:box=1:boxcolor=black@0.6:boxborderw=6[f${i}]`)
+    .map((t, i) => {
+      // drawtext reads : ' \\ and % specially; labels are plain words and numbers.
+      const label = (o.labels?.[i] ?? `${t.toFixed(1)}s`).replace(/[:'\\%]/g, ' ');
+      return `[${i}:v]scale=480:-1,drawtext=fontfile='${font}':text='${label}':x=10:y=10:fontsize=22:fontcolor=white:box=1:boxcolor=black@0.6:boxborderw=6[f${i}]`;
+    })
     .join(';');
   const pad = rows * cols - times.length;
   const blanks = pad ? `;color=black:s=480x${Math.round((480 * s.meta.height) / s.meta.width)}:d=1,split=${pad}${Array.from({ length: pad }, (_, i) => `[b${i}]`).join('')}` : '';
@@ -134,6 +141,99 @@ export async function sheet(s: Session, film: string, times: number[], maxCols =
   await run('ffmpeg', ['-y', '-loglevel', 'error', ...inputs, '-filter_complex', filter, '-map', '[out]', '-frames:v', '1', out]);
   rmSync(tmp, { recursive: true, force: true });
   return out;
+}
+
+export interface BoardResult {
+  dir: string;
+  html: string;
+  sheet: string;
+  frames: number;
+  unboarded: string[];
+}
+
+/**
+ * The storyboard: every frame a scene marks with board(t, note), each with its scene, narration and
+ * note, as PNGs, a contact sheet and an HTML page in build/<film>/<cut>/board/. A scene with no board
+ * frames gets one at its middle, so the board covers the whole film. `onlyScene` limits it to one scene.
+ */
+export async function storyboard(s: Session, film: string, onlyScene?: string): Promise<BoardResult> {
+  const { meta } = s;
+  const dir = join(buildDir(film), 'board');
+  rmSync(dir, { recursive: true, force: true });
+  mkdirSync(dir, { recursive: true });
+  const scenes = Object.entries(meta.scenes).filter(([id]) => !onlyScene || id === onlyScene);
+  if (!scenes.length) throw new Error(`no scene "${onlyScene}"`);
+  const sceneAt = (t: number) => scenes.find(([, sc], i) => t >= sc.t0 && (t < sc.t1 || i === scenes.length - 1));
+  const frames: { t: number; note: string; scene: string; boarded: boolean }[] = [];
+  const unboarded: string[] = [];
+  for (const f of meta.board) {
+    const sc = sceneAt(f.t);
+    if (sc) frames.push({ ...f, scene: sc[0], boarded: true });
+  }
+  for (const [id, sc] of scenes) {
+    if (frames.some(f => f.scene === id)) continue;
+    unboarded.push(id);
+    frames.push({ t: +((sc.t0 + sc.t1) / 2).toFixed(3), note: 'Not boarded yet.', scene: id, boarded: false });
+  }
+  frames.sort((a, b) => a.t - b.t);
+  const lineAt = (scene: string, t: number) => {
+    const ls = meta.scenes[scene].lines.map(n => meta.lines[String(n)]);
+    if (!ls.length) return '';
+    const now = ls.find(l => t >= l.v0 - 0.2 && t <= l.v1 + 0.2);
+    const before = ls.filter(l => l.v0 <= t).pop();
+    return (now ?? before ?? ls[0]).text;
+  };
+  const num = (i: number) => String(i + 1).padStart(2, '0');
+  for (const [i, f] of frames.entries()) writeFileSync(join(dir, `${num(i)}-${f.scene}.png`), await s.frame(f.t));
+  const esc = (x: string) => x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const cards = frames.map((f, i) => {
+    const img = `${num(i)}-${f.scene}.png`;
+    const title = meta.scenes[f.scene].title ?? f.scene;
+    return `<article class="${f.boarded ? '' : 'todo'}">
+  <a href="${img}"><img src="${img}" alt="Frame ${num(i)}"></a>
+  <div class="meta"><b>${num(i)}</b> <span>${esc(title)}</span> <code>#${f.scene} · ${f.t.toFixed(1)}s</code></div>
+  <blockquote>${esc(lineAt(f.scene, f.t))}</blockquote>
+  <p>${esc(f.note)}</p>
+</article>`;
+  }).join('\n');
+  const html = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(meta.title)} storyboard</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; padding: 32px 16px; background: #0d0f26; color: #e8eaf6; font: 15px/1.5 system-ui, sans-serif; }
+  h1 { margin: 0 auto 4px; max-width: 1800px; font-size: 26px; }
+  .sub { margin: 0 auto 24px; max-width: 1800px; color: #8d90b3; }
+  main { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 500px), 1fr)); gap: 24px; max-width: 1800px; margin: 0 auto; }
+  article { background: #1b1e45; border-radius: 10px; overflow: hidden; }
+  article.todo { opacity: 0.55; }
+  img { display: block; width: 100%; aspect-ratio: ${meta.width} / ${meta.height}; background: #000; }
+  .meta { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; padding: 12px 16px 0; }
+  .meta b { color: #88f3b4; } .meta code { color: #8d90b3; font-size: 13px; margin-left: auto; }
+  blockquote { margin: 8px 16px 0; padding-left: 12px; border-left: 3px solid #2f3468; color: #c7c9dc; font-style: italic; }
+  p { margin: 8px 16px 16px; }
+</style></head><body>
+<h1>${esc(meta.title)}: storyboard</h1>
+<p class="sub">${esc(film)} · ${frames.length} frames · ${meta.duration}s · timing: ${meta.voice}</p>
+<main>
+${cards}
+</main>
+</body></html>
+`;
+  const htmlPath = join(dir, 'index.html');
+  writeFileSync(htmlPath, html);
+  // The sheet is the page itself, captured whole: frames with their narration and notes, one image.
+  const sheetPath = join(dir, 'board.png');
+  const browser = await chromium.launch({ executablePath: process.env.CHROME ?? '/usr/bin/google-chrome', args: ['--force-color-profile=srgb', '--hide-scrollbars'] });
+  try {
+    const page = await browser.newPage({ viewport: { width: 1680, height: 1000 } });
+    await page.goto(`file://${htmlPath}`);
+    await page.evaluate(() => Promise.all(Array.from(document.images, i => i.decode().catch(() => undefined))));
+    await page.screenshot({ path: sheetPath, fullPage: true });
+  } finally {
+    await browser.close();
+  }
+  return { dir, html: htmlPath, sheet: sheetPath, frames: frames.length, unboarded };
 }
 
 function layout(rows: number, cols: number, meta: Meta): string {

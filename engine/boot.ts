@@ -1,11 +1,11 @@
 // Entry point of stage.html?film=<name>: loads the film's timeline and module, mounts the stage,
 // and exposes window.studio for the player and the renderer.
-import { allCues, renderFrame, type Cue } from './frame.ts';
+import { allBoard, allCues, renderFrame, type BoardFrame, type Cue } from './frame.ts';
 import { mountScenes, mountStage, type FilmDef } from './film.ts';
 import { setTimeline, type Timeline } from './timeline.ts';
 
 export interface StudioApi {
-  meta: Timeline & { cues: Cue[] };
+  meta: Timeline & { cues: Cue[]; board: BoardFrame[] };
   /** Draw the frame at t seconds. Resolves when the frame is ready to capture. */
   render(t: number): Promise<void>;
   /** Resolves once fonts are loaded and frame 0 is drawn. */
@@ -56,7 +56,7 @@ async function boot(): Promise<void> {
   })();
 
   window.studio = {
-    meta: { ...tl, cues: allCues() },
+    meta: { ...tl, cues: allCues(), board: allBoard() },
     async render(t: number) {
       await renderFrame(t);
     },

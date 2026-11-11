@@ -11,7 +11,7 @@ brand: that belongs to a style.
 | `color.ts` | `mix` (blend two colours), `alpha`, `hexToRgb` |
 | `dom.ts` | `svg`, `div`, `text`, `set`, `vis`/`hvis` (visibility), `named`, `strokePath`/`drawOn` |
 | `timeline.ts` | the `Timeline` type and `scene(id)`, `line(n)`, `part(n, i)` |
-| `frame.ts` | `onFrame`, `afterFrame`, `cue`, `waitFor`, and the render loop (a frame that waited on a load is drawn again once it lands) |
+| `frame.ts` | `onFrame`, `afterFrame`, `cue`, `board` (a storyboard frame with a note), `waitFor`, and the render loop (a frame that waited on a load is drawn again once it lands) |
 | `film.ts` | `defineScene`, `defineFilm`, the `Style` contract, the stage and its layers |
 | `three.ts` | 3D: `layer3d(ctx)` (a WebGL canvas per scene, rendered after each frame), `isometric`/`perspective` cameras, `loadModel`, `meshes`; import it directly, only in scenes that use 3D |
 | `race.ts` | `race(series, { rows, swap?, fade? })`: values over time ranked at any moment, for a bar-chart race. Data only: straight lines between points, `hold` or `end` after the last, smoothed rank positions (`pos`) so swaps slide. A style draws it |
