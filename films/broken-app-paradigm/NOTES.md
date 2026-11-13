@@ -29,16 +29,72 @@ These scripts are now the source of the words; the drafts in the planning notes 
 ## Cuts
 
 - `short`: the short script, `am_michael` draft voice, `coasys-ambient` score. 4:04 voiced.
-- `general`: the general script, storyboarded on 2026-11-13: every scene as key poses with rough
-  motion (36 `board()` frames) from `styles/coasys/sketch.ts`. `pnpm film board
-  broken-app-paradigm/general` renders it. Silent timing. Waiting on James's review of the imagery.
+- `general`: the general script, `am_michael` draft voice (5:46 voiced), `coasys-ambient` score.
+  Storyboarded on 2026-11-13 (key poses from `styles/coasys/sketch.ts`, imagery approved by James),
+  then animated the same day: every scene now moves with the narration, keeping the boarded imagery.
+  37 `board()` frames still mark the fully formed poses (`pnpm film board broken-app-paradigm/general`).
+  Motion helpers live in the cut's `kit.ts` (pop, arrive, drawn, drawArrow with dashes, fade,
+  stagger, crowd/popPeople (a community with movable people), appParts/popEach (an app whose features
+  pop), blobSquarePath (a membrane pressed square), and `camera`/`zoomAt` (keyed views; a zoom is a
+  pure zoom about the point both views share)). Nothing was added to the style.
 
 ## State
 
 | scene | state |
 |---|---|
-| their-ground (1) | second draft (leaderboard race), waiting for James's review |
-| users (2) … end-card | placeholders |
+| short cut: their-ground (1) | second draft (leaderboard race), waiting for James's review |
+| short cut: users (2) … end-card | placeholders |
+| general cut: all 11 scenes | animated (first pass, 2026-11-13), waiting for James's review |
+
+### General cut: what each scene does
+
+- **shape**: community grows in, talk/organise/decide arrive as said; problem mood: team pops, app
+  draws and its features pop, it seals, 24 copies fly out to a crowd; then the community squashed
+  square in a box, and the builder with a small idea beside a huge app.
+- **diversity**: one continuous camera: field pops in from the middle (drifting), labels as named,
+  slight pull-back on "hundreds of thousands"; ring picks the climate group, dive in (detail
+  cross-fades with zoom), people cells pop; dive into one person (others step back), five facets pop
+  as day/role/conversation are said; pull all the way back on "all of it moves"; then 12 → 1,000
+  (flashes red on "breaks") → split; holarchy builds left to right.
+- **fixed**: app box pops, layout grid draws, toolkit pops, central team and arrow; three steel squares,
+  communities press down into them (membranes morph square, people into rows); bend to fit (frame
+  draws, membrane squares, one person pushed out) vs one community breaking into five apps, links
+  drawn and crossed out; the five boxes flash on "spread across five apps".
+- **impossible**: company + coins, shrinks back on "isn't the whole problem"; five-person team, "still
+  can't"; the team walks to the far side; communities and their needs pop, a wall rises on "far away",
+  company and app pop; long tail draws on, head shades, tail communities pop; app creeps toward the
+  group, which moves off leaving a dashed ghost.
+- **builders**: three builders, ideas pop as named; the map idea stays, tries to leave (crossed);
+  dashed whole-app outline; nine shell layers draw on as each is named; backend slab rises; whole
+  stack squashes into the proportion bar, idea slides to the sliver.
+- **islands**: bot drafts purple layers fast; they close into the finished app, which moves right as
+  its island spreads; home island and community; dashed crossing arrow; community leans and draws back
+  on "bet on something new"; scene shrinks away into seven islands, links drawn, then crossed.
+- **wrong-size**: a two-ended line; needs pop (and keep changing shape), ideas pop; the app drops in
+  with a thud; one need and one idea are set inside it to show the scale; the big words.
+- **other-fields**: three panels pop as named, pieces slide up under each; on the pattern line the
+  three merge into one small core and 14 pieces fly out to ring it; the ring glows on "fit together".
+- **why-not**: platform; door slides open a crack, apps/bots come up, it shuts, pushes them back,
+  padlock; frame glows on "control of the interface"; community, code pops inside, arrows to message
+  and person; two requirement cards pop as said, ticks draw on.
+- **right-size**: core rises; blocks, engine sweep and rule docks light as named; four pieces drop in
+  as named; the first lifts out, the "what it does" panel lists its rows; builder + map piece, four
+  communities, copies ride the arcs into them; community assembles three pieces, forum dims and is
+  crossed, rota comes in, membrane grows; people pop, pieces pop under them and dock into the core.
+- **end-card**: next, promise, core; the piece drops in at the end of the line (`final` cue).
+
+### Known rough edges (general cut)
+
+- 52.9–53.4: after the pull-back the field shows only briefly before fading under the "twelve people"
+  community, which pops in while the field is still fading (a short overlap).
+- 37.0–38.5 (dive into the community): neighbouring communities grow thick strokes as they pass
+  off-screen; reads fine in motion but looks heavy in a still at ~37.6.
+- 51.4–52.0 (pull-back): mid-zoom stills show big shoulders of field people at the top edge.
+- Word-level times are estimated from each sentence's span (no word timings), so some arrivals may sit
+  a beat early or late; adjust the fractions passed to `k(...)`/`word(...)` in the scene.
+- 104 s: the five team members overlap slightly (boarded spacing kept).
+- Dashed lines drawn with `drawn()` come out solid (drawOn uses the dash array); use `drawArrow` with
+  `dash` for a dashed draw-on.
 
 ## Decisions
 
