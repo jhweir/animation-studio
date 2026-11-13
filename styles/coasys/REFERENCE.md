@@ -76,6 +76,30 @@ Mounted automatically: three drifting orbs and a vignette.
   frame, for attaching things (cables) from an onFrame registered after the board.
 - `formatCount(millions)`: `950M`, `1.27B`, `0.9M`.
 
+## Sketch (`sketch.ts`)
+
+The explaining vocabulary, first drawn for storyboards: everything is centred on 0,0, so place it with
+`at()`. Colour meanings hold: steel for apps and platforms, mint for communities and WE, orange for
+good ideas and value, red for what fails or is blocked.
+
+- Placing and timing: `at(parent, x, y, s?, name?, r?)` (a group, optionally named), `pose(el, a, b)`
+  (show between a and b with fades), `travel(el, from, to, a, b, s?)` (an eased move that stays),
+  `mood(ctx, 'problem' | 'blueprint' | 'ours')` (the scene's background cover; blueprint adds a grid).
+- Marks: `caps(parent, x, y, text, { size, fill, anchor, weight })` (bold spaced caps label),
+  `mark(parent, k, x, y, s, fill)` (one of the four abstract shapes, as a feature, need or idea),
+  `arrow(parent, x1, y1, x2, y2, { stroke, bend, width, dash })`, `cross(...)` (red: died, can't),
+  `tick(...)` (kept).
+- `loop(parent, r, { stroke, labels, width, spin, from })`: try, test, keep, round a circle, with a dot
+  that runs round it at `spin` turns per second from `from`.
+- `appBox(parent, w, h, { parts, seed })`: a sealed app; `parts` are `'plain'`, `'idea'` (orange) or
+  `'bad'` (red).
+- `membranePath(r, seed, wobble?)`, `membrane(parent, r, seed, { ring, width, fill, dash })`: a living
+  boundary. `community(parent, r, n, seed)`: a membrane with n people. `personCell(parent, r, needs,
+  seed)`: one person as their own cell, with their needs as marks (the holarchy's smallest level).
+- `cartridge(parent, w, h, label, { marks, dim })`: a piece that plugs into WE. `core(parent, w, h,
+  docks?)`: the WE core, a slab of building blocks with docks along its top. `company(parent, s)`: a
+  steel office block.
+
 ## Placeholder (`placeholder.ts`)
 
 The style's stand-in for a scene a cut hasn't built: the section title and its narration, sentence
@@ -87,6 +111,6 @@ by sentence with the voice, and a "Not animated yet" tag. Mounted automatically.
 
 ## Still to port from Data's kit
 
-Membrane groups (`cell`, `living`), DNA rings, the platform lattice, sealed app boxes, tiles, layer
+Membrane groups with Data's full motion (`cell`, `living`; `membrane` and `community` in `sketch.ts` are the static start), DNA rings, the platform lattice, sealed app boxes, tiles, layer
 bars, the big central AI, spaces, line-drawn walking people, the WE app window and phone, the
 Coasys logo and lockup, the end card, counters, ripples. Port each when a film first needs it.

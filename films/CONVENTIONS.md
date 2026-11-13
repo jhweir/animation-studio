@@ -94,8 +94,9 @@ Board a film in its real cut, so the drawings become the animation once they're 
   spoken at that moment and its note, to `build/<film>/<cut>/board/`: one PNG per frame, `index.html`
   (open it in a browser) and `board.png` (the whole board as one image). A scene with no `board()`
   frames gets one at its middle (its placeholder, until it's built).
-- Rough drawing pieces made for a board can live in the cut (e.g. `cuts/<cut>/kit.ts`) while the
-  imagery is being explored; move what's approved into the style.
+- Draw with the style's pieces (Coasys: `sketch.ts`, see its REFERENCE.md). A piece only one film
+  needs can live in the cut (e.g. `cuts/<cut>/kit.ts`) while it's explored; move it into the style once
+  a second film needs it or it's approved.
 
 ## NOTES.md
 

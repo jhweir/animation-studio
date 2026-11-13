@@ -36,8 +36,9 @@ Cut: `learning-to-evolve/main` (focused script, style `coasys`, draft voice `am_
 
 ## Storyboard imagery (first pass)
 
-- Rough vocabulary lives in `cuts/main/kit.ts` (loop, sealed app box, cell, bacterium, plasmid,
-  ladder, community, cartridge, WE core, company, head). Move what's approved into `styles/coasys`.
+- The shared pieces (loop, app box, community, cartridge, WE core, company, at/pose/caps/marks) moved
+  into `styles/coasys/sketch.ts` on 2026-11-13, when broken-app-paradigm needed them too. The
+  biology (cell, bacterium, plasmid, ladder, head) stays in `cuts/main/kit.ts`.
 - The loop (try, test, keep) is the film's motif: huge and slow for apps, shrinking with each rung.
 - Moods: problem for apps (§1, 2, 4), blueprint for life (§3), ours for WE (§5–8).
 - Good ideas and traits are orange (value); life's rungs light orange, WE's counterparts light mint.

@@ -11,6 +11,7 @@ export * from './type.ts';
 export * from './figures.ts';
 export { placeholder } from './placeholder.ts';
 export * from './leaderboard.ts';
+export * from './sketch.ts';
 
 const coasys: Style = {
   name: 'coasys',
