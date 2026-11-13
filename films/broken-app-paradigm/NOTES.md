@@ -20,9 +20,18 @@ the open, living alternative. Video 2 (how WE works) follows.
 
 These scripts are now the source of the words; the drafts in the planning notes are history.
 
+- `scripts/2026-11-13-general.md`: the general version (877 words, about 5:30; the cut's silent
+  estimate is 6:23). No worked example: fractal diversity through the social-cell holarchy, the
+  knowledge problem (even a well-meaning team can't), the long tail, the builder's idea inside a
+  rebuilt shell (front end first), islands, and the root cause "the unit is the wrong size". Written
+  to complement `films/learning-to-evolve`; keeps evolutionary vocabulary out.
+
 ## Cuts
 
 - `short`: the short script, `am_michael` draft voice, `coasys-ambient` score. 4:04 voiced.
+- `general`: the general script, storyboarded on 2026-11-13: every scene as key poses with rough
+  motion (36 `board()` frames) from `styles/coasys/sketch.ts`. `pnpm film board
+  broken-app-paradigm/general` renders it. Silent timing. Waiting on James's review of the imagery.
 
 ## State
 

@@ -1,0 +1,19 @@
+{
+  "script": "scripts/2026-11-13-general.md",
+  "style": "coasys",
+  "voice": { "provider": "kokoro", "voice": "am_michael" },
+  "score": "coasys-ambient",
+  "scenes": {
+    "shape": { "pace": "open", "music": { "mood": "shade", "layers": ["piano"] } },
+    "diversity": { "music": { "mood": "warm", "layers": ["arpeggio"] } },
+    "fixed": { "music": { "mood": "dark" } },
+    "impossible": { "music": { "mood": "dark", "layers": ["heartbeat"] } },
+    "builders": { "music": { "mood": "shade" } },
+    "islands": { "music": { "mood": "dark" } },
+    "wrong-size": { "pace": "calm", "music": { "mood": "lift" } },
+    "other-fields": { "music": { "mood": "warm", "layers": ["arpeggio"], "cut": true } },
+    "why-not": { "music": { "mood": "shade" } },
+    "right-size": { "music": { "mood": "warm", "layers": ["strings"] } },
+    "end-card": { "pace": "end", "hold": 3, "music": { "mood": "resolve", "layers": ["strings"] } }
+  }
+}
