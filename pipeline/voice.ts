@@ -71,10 +71,22 @@ export function spoken(text: string, pronounce: Record<string, string> = {}): st
   return s;
 }
 
+/** A WAV file's length in seconds, read from its header (fmt byte rate, data size): no ffprobe needed. */
 function duration(wav: string): number {
-  const r = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', wav], { encoding: 'utf8' });
-  const d = Number(r.stdout.trim());
-  if (!d) throw new Error(`can't read the length of ${wav}`);
+  const b = readFileSync(wav);
+  let byteRate = 0;
+  let d = 0;
+  for (let i = 12; i + 8 <= b.length; ) {
+    const id = b.toString('ascii', i, i + 4);
+    const size = b.readUInt32LE(i + 4);
+    if (id === 'fmt ') byteRate = b.readUInt32LE(i + 16);
+    if (id === 'data') {
+      d = Math.min(size, b.length - i - 8) / byteRate;
+      break;
+    }
+    i += 8 + size + (size % 2);
+  }
+  if (!byteRate || !d) throw new Error(`can't read the length of ${wav}`);
   return Math.round(d * 1000) / 1000;
 }
 
