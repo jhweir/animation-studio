@@ -1,65 +1,91 @@
-// Scene 1: a wall of sealed apps, each an experiment; they spread into a lineage across time where most
-// die and survivors are copied; the loop (try, test, keep) rises over it; one whole app sits in "test".
-import { board, defineScene, named, onFrame, rng, svg } from '../../../../../engine/index.ts';
+// Scene 1: a wall of sealed apps pops up, each an experiment; it gives way to a lineage that grows across
+// time, where most branches die (red crosses) and survivors are copied; the loop (try, test, keep) rises
+// over it, its stations pulsing as they're named; one whole app flies out of the lineage into "test".
+import { board, cue, defineScene, eio, eout, named, onFrame, prog, vis } from '../../../../../engine/index.ts';
 import { color } from '../../../../../styles/coasys/index.ts';
-import { appBox, at, caps, cross, loop, mood, pose, travel } from '../kit.ts';
+import { appBox, at, caps, cross, drawn, fly, loop, mood, popIn, hold, pulse } from '../kit.ts';
 
 export default defineScene('already-evolves', ctx => {
   const { art, t1 } = ctx;
   const l0 = ctx.line(0), l1 = ctx.line(1), l2 = ctx.line(2);
+  const [died, survived] = [ctx.part(1, 2), ctx.part(1, 3)];
+  const [evolve, tryTest, look] = [ctx.part(2, 0), ctx.part(2, 1), ctx.part(2, 2)];
   mood(ctx, 'problem');
-  const r = rng(3);
-  const kinds = () => Array.from({ length: 4 }, () => 'plain' as const);
 
-  // Pose 1: a specimen wall of apps.
+  // Pose 1: a specimen wall of apps, popping up row by row as the first line is spoken.
   const wall = named('app-wall', at(art));
   for (let i = 0; i < 15; i++) {
     const x = 330 + (i % 5) * 315, y = 220 + Math.floor(i / 5) * 230;
-    appBox(at(wall, x, y), 230, 150, { parts: kinds(), seed: i + 1 });
-    caps(wall, x, y + 105, `experiment ${String(i + 1).padStart(3, '0')}`, { size: 16 });
+    const a = l0.v0 + 0.1 + Math.floor(i / 5) * 0.45 + (i % 5) * 0.12;
+    const spec = named(`experiment-${i + 1}`, at(wall));
+    appBox(at(spec, 0, 0), 230, 150, { seed: i + 1 });
+    caps(spec, 0, 105, `experiment ${String(i + 1).padStart(3, '0')}`, { size: 16 });
+    popIn(spec, x, y, a, { s: 1 });
+    if (i % 5 === 0) cue(a, 'pop');
   }
-  pose(wall, ctx.t0, l1.v0 + 0.4);
+  hold(wall, ctx.t0, l1.v0 + 0.8);
 
-  // Pose 2: a lineage of apps over time; most branches end in a cross, survivors are copied.
+  // Pose 2: a lineage of apps across time. Each generation's branches draw on, then its apps pop in;
+  // most branches end (red crosses as "died" is spoken); the survivors are copied into the last generation.
   const tree = named('app-lineage', at(art));
-  const gens = [[0], [0, 0, 0], [0, 1, 1, 2], [1, 1, 2, 3, 3], [0, 0, 1, 3, 4, 4]];
-  const alive = [[true], [true, true, false], [false, true, false, true], [true, false, false, true, false], [true, true, true, true, true, true]];
+  const gens = [[0], [0, 0, 0], [0, 0, 2, 2], [1, 1, 1, 2, 2], [0, 0, 0, 3, 3, 3]];
   const pos: [number, number][][] = gens.map((g, gi) => g.map((_, i) => [240 + gi * 360, 520 + (i - (g.length - 1) / 2) * 128]));
-  const lines = svg('g', { stroke: color.steel, 'stroke-width': 2, opacity: 0.45 }, tree);
+  const span = (ctx.part(1, 1).v1 - l1.v0 - 0.8) / 3;
+  const genAt = (gi: number) => (gi < 4 ? l1.v0 + 0.5 + gi * span : survived.v0 + 0.5);
+  const axis = named('time-axis', at(tree));
+  drawn(axis, 'M 300 960 H 1620', l1.v0 + 0.2, { stroke: color.text3, 'stroke-width': 2 }, { dur: 1.2 });
+  caps(axis, 240, 968, 'then', { size: 22 });
+  caps(axis, 1680, 968, 'now', { size: 22 });
+  const branches = named('branches', at(tree));
+  let deaths = 0;
   gens.forEach((g, gi) => g.forEach((p, i) => {
-    if (gi === 0) return;
-    const [x0, y0] = pos[gi - 1][p], [x1, y1] = pos[gi][i];
-    svg('path', { d: `M ${x0 + 70} ${y0} C ${x0 + 200} ${y0} ${x1 - 200} ${y1} ${x1 - 70} ${y1}`, fill: 'none' }, lines);
-  }));
-  gens.forEach((g, gi) => g.forEach((_, i) => {
     const [x, y] = pos[gi][i];
-    const dead = !alive[gi][i] || (gi < 4 && !gens[gi + 1].includes(i));
-    const b = at(tree, x, y);
-    appBox(b, 130, 86, { parts: ['plain', 'plain', 'plain', 'plain'], seed: 10 + gi * 7 + i + Math.floor(r() * 3) });
-    if (dead && gi < 4) {
-      b.setAttribute('opacity', '0.3');
-      cross(tree, x + 52, y - 34, 0.8);
+    if (gi > 0) {
+      const [x0, y0] = pos[gi - 1][p];
+      drawn(branches, `M ${x0 + 70} ${y0} C ${x0 + 200} ${y0} ${x - 200} ${y} ${x - 70} ${y}`, genAt(gi) - 0.55, { stroke: color.steel, 'stroke-width': 2, opacity: 0.45 });
+    }
+    const box = named(`lineage-app-${gi + 1}-${i + 1}`, at(tree));
+    const inner = at(box);
+    appBox(inner, 130, 86, { seed: 10 + gi * 7 + i });
+    popIn(box, x, y, genAt(gi) + i * 0.06);
+    const dead = gi < 4 && !gens[gi + 1].includes(i);
+    if (dead) {
+      const a = died.v0 + 0.2 + deaths++ * 0.13;
+      onFrame(t => inner.setAttribute('opacity', (1 - 0.7 * eout(prog(t, a, a + 0.4))).toFixed(3)));
+      popIn(named(`died-${gi + 1}-${i + 1}`, cross(tree, 0, 0)), x + 52, y - 34, a, { s: 0.8 });
     }
   }));
-  caps(tree, 240, 968, 'then', { size: 22 });
-  caps(tree, 1680, 968, 'now', { size: 22 });
-  svg('line', { x1: 300, y1: 960, x2: 1620, y2: 960, stroke: color.text3, 'stroke-width': 2, 'stroke-dasharray': '4 10' }, tree);
-  pose(tree, l1.v0 + 0.2, t1 + 1);
-  onFrame(t => tree.setAttribute('opacity', String(t > l2.v0 ? 0.25 : 1)));
+  cue(died.v0 + 0.2, 'crack');
+  cue(survived.v0 + 0.5, 'pop');
+  hold(tree, l1.v0, t1 + 1);
+  onFrame(t => tree.setAttribute('opacity', (1 - 0.75 * eio(prog(t, evolve.v0, evolve.v0 + 0.8))).toFixed(3)));
 
-  // Pose 3: the loop over the lineage. Pose 4: one whole app in "test".
-  const lp = named('loop', at(art, 960, 500));
-  loop(lp, 250, { spin: 0.25, from: l2.v0 });
-  pose(lp, ctx.part(2, 1).v0 - 0.2, t1 + 1);
+  // Pose 3: the loop rises over the lineage; try, test and keep pulse as they're named.
+  const lp = named('loop', at(art));
+  loop(lp, 250, { spin: 0.25, from: tryTest.v0 });
+  popIn(lp, 960, 500, evolve.v0 + 0.5, { dur: 0.6 });
+  cue(evolve.v0 + 0.5, 'seed');
+  const station = (deg: number): [number, number] => [960 + 250 * Math.cos((deg * Math.PI) / 180), 500 + 250 * Math.sin((deg * Math.PI) / 180)];
+  const said = tryTest.v1 - tryTest.v0;
+  ([-90, 30, 150] as const).forEach((deg, i) => {
+    const [x, y] = station(deg);
+    const a = tryTest.v0 + i * said * 0.33;
+    pulse(art, x, y, 26, a, color.text);
+    cue(a, 'tick', { i });
+  });
+
+  // Pose 4: one whole app flies out of the newest generation into the middle of the loop.
   const tested = named('tested-app', at(art));
   appBox(tested, 190, 130, { parts: ['plain', 'idea', 'plain', 'bad', 'plain', 'plain'], seed: 4 });
-  travel(tested, [1500, 860], [960, 500], ctx.part(2, 2).v0, ctx.part(2, 2).v0 + 0.8, 1.2);
+  const [sx, sy] = pos[4][2];
+  fly(tested, [sx, sy], [1400, 380], [960, 500], look.v0, look.v0 + 0.9, { s0: 130 / 190, s1: 1.2 });
+  cue(look.v0 + 0.9, 'land');
   const testedLabel = named('tested-label', caps(art, 960, 840, 'being tested: the whole app', { size: 22, fill: color.text2 }));
-  pose(tested, ctx.part(2, 2).v0 - 0.1, t1 + 1);
-  pose(testedLabel, ctx.part(2, 2).v0 + 0.6, t1 + 1);
+  onFrame(t => vis(testedLabel, eout(prog(t, look.v0 + 0.8, look.v0 + 1.3))));
 
-  board(l0.v1 - 0.2, 'Every app as a sealed specimen on a wall: each one an experiment someone shipped.');
-  board(l1.v1 - 0.3, 'The same apps as a lineage over time: most branches die (red crosses), survivors get copied.');
-  board(ctx.part(2, 1).v1, 'The loop rises over the lineage: try, test, keep. This loop is the motif of the whole film.');
-  board(l2.v1, 'One whole app slides into the middle of the loop: the thing being tested is the entire product.');
+  board(l0.v1 - 0.2, 'Every app as a sealed specimen on a wall, popping up row by row: each one an experiment someone shipped.');
+  board(died.v1, 'The apps as a lineage over time, grown generation by generation; most branches end in a red cross as "died" is spoken.');
+  board(l1.v1 - 0.3, 'Survivors are copied: the newest generation grows from the few that lived.');
+  board(tryTest.v1, 'The lineage dims and the loop rises over it: try, test, keep pulse as they are named. This loop is the motif of the whole film.');
+  board(l2.v1, 'One whole app has flown out of the newest generation into the middle of the loop: the thing being tested is the entire product.');
 });

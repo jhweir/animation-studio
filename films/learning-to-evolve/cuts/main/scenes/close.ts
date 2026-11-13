@@ -1,8 +1,9 @@
-// Scene 8: life's branching lineage (blueprint ink) grows left to right and turns mint as it becomes a
-// web of communities; then the title, with the loop.
-import { board, defineScene, drawOn, named, onFrame, prog, rng, strokePath } from '../../../../../engine/index.ts';
+// Scene 8: life's branching lineage draws on from the left in blueprint ink, turns mint past the middle
+// and ends in small communities; as the last line starts they fly together into one mint loop, spinning
+// above the title.
+import { board, cue, defineScene, drawOn, named, onFrame, prog, rng, strokePath } from '../../../../../engine/index.ts';
 import { beat, color, moods } from '../../../../../styles/coasys/index.ts';
-import { at, community, loop, pose } from '../kit.ts';
+import { at, community, fly, hold, loop, popIn } from '../kit.ts';
 
 export default defineScene('close', ctx => {
   const { art, text, t1 } = ctx;
@@ -27,19 +28,26 @@ export default defineScene('close', ctx => {
     const s = a + (b.x0 - 120) / 400;
     onFrame(t => drawOn(p, prog(t, s, s + 0.9)));
   }
+  cue(a, 'grow');
+  hold(tree, ctx.t0, l1.v0 + 0.4, 0.5);
+
+  // The communities at the tips pop in, then fly together into the title's loop.
+  const gather = l1.v0 - 0.2;
   [[1520, 300], [1600, 560], [1480, 800], [1300, 430], [1340, 690]].forEach(([x, y], i) => {
-    const g = at(tree, x, y);
+    const outer = named(`tip-community-${i + 1}`, at(art));
+    const g = at(outer);
     community(g, 60, 3, 40 + i);
-    pose(g, a + 2.6 + i * 0.2, l1.v0 + 0.4);
+    popIn(g, 0, 0, a + 3.3 + i * 0.12);
+    fly(outer, [x, y], [(x + 960) / 2, Math.min(y, 300) - 120], [960, 300], gather, gather + 0.8, { s0: 1, s1: 0.4, show: a + 3.3, out: gather + 0.85 });
   });
-  pose(tree, ctx.t0, l1.v0 + 0.4);
+  cue(a + 3.3, 'pop');
 
   // The title, with the loop above it.
-  const lp = named('title-loop', at(art, 960, 300));
+  const lp = named('title-loop', at(art));
   loop(lp, 90, { labels: false, width: 5, spin: 0.5, from: l1.v0, stroke: color.mint });
-  pose(lp, l1.v0, t1 + 1);
+  popIn(lp, 960, 300, gather + 0.6, { dur: 0.5 });
   beat(text, { t0: l1.v0 + 0.2, t1: t1 + 1, y: 470, rows: [{ h: 'Learning to evolve', t: l1.v0 + 0.3 }], punch: false });
 
-  board(ctx.line(0).v1, 'A branching lineage draws on from the left in blueprint ink, turns mint past the middle, and ends in small communities.');
-  board(l1.v1, 'Title: "Learning to evolve", with the loop spinning above it in mint.');
+  board(l1.v0 - 0.25, 'A branching lineage has drawn on from the left in blueprint ink, turning mint past the middle, and ends in small communities.');
+  board(l1.v1, 'The communities have flown together into one mint loop, spinning above the title: "Learning to evolve".');
 });
